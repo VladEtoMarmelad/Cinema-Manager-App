@@ -1,0 +1,51 @@
+.movieInfo {
+    display: flex;
+    margin-left: 22.5em;
+    position: relative;
+    top: 5em;
+    flex-direction: row;
+    column-gap: 30px;
+}
+
+.movieInfo section {
+    display: flex;
+}
+
+.imageLikeDiv {
+    position: sticky;
+    top: 5em;
+    background-color: #2d2d2d;
+    border-radius: 15px;
+    width: 300px;
+    height: 500px;
+}
+
+#posterSection {
+    border: 0px solid black;
+}
+
+#infoSection {
+    /* border: 1px solid black; */
+    max-width: 35%;
+    display: block;
+    flex-wrap: wrap;
+}
+
+#infoSection p {
+    font-weight: bold;
+}
+
+#infoSection span {
+    color: gray;
+    margin-left: 5px;
+}
+
+#timeTable {
+    width: 20%;
+    height: 25em;
+    position: sticky;
+    top: 5em;
+    background-color: #2d2d2d;
+    border: 1px solid black;
+    border-radius: 15px;
+}
