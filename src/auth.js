@@ -19,13 +19,15 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                     user = await axios.get("http://127.0.0.1:8000/users/")
                     user = user.data.find(user => user.name === credentials.name && user.password === credentials.password)
                     user = {
+                        id: user.id,
                         name: user.name,
                         admin: user.admin
                     }
 
                     return {
-                            name: user.name,
-                            admin: user.admin
+                        id: user.id,
+                        name: user.name,
+                        admin: user.admin
                     }
                 } catch (error) {
                     return null
@@ -35,11 +37,13 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     ],
     callbacks: {
         async session({ session, token }) {
+            session.user.id = token.id;
             session.user.admin = token.admin;
             return session;
         },
         async jwt({ token, user }) {
             if (user) {
+                token.id = user.id;
                 token.admin = user.admin;
             }
             return token;

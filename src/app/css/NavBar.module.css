@@ -1,25 +1,38 @@
 .NavBar {
     display: flex;
-    flex-wrap: wrap;
     flex-direction: column;
     gap: 0.5em;
     position: fixed;
     width: 17.5em;
-    height: 100%;
-    border-right: 1px solid black;
+    height: 100vh;
+    border-right: 1px solid rgba(30, 30, 30, 0.5);
+    /* padding-left: 20px; */
+    padding: 30px 10px 50px 20px;
   }
-  
+
+  .NavBar section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .NavBar div {
+    display: flex;
+    flex-direction: column;
+  }
+
   .NavBar a {
+    width: 95%;
+    padding: 7.5px 0 7.5px 7.5px;
+    border-radius: 15px;
     color: #1e1e1e;
-    margin-left: 3em;
   }
   
   .NavBar a:hover {
-    color: #5e5e5e;
     cursor: pointer;
+    background-color: rgba(30, 30, 30, 0.1);
   }
   
   .NavBar hr {
-    width: 80%;
-    align-self: center;
+    width: 95%;
+    color: rgba(30, 30, 30, 0.5);
   }

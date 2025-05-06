@@ -21,6 +21,8 @@ class MovieModel(models.Model):
     director = models.CharField(default="Режиссер не указан", max_length=50)
     scenarist = models.CharField(default="Сценарист не указан", max_length=50)
     production = models.CharField(default="Страна производителя не указана", max_length=50)
+    poster = models.ImageField(upload_to="images/posters/", default="images/posters/default.PNG")
+    rating = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return self.name
@@ -32,6 +34,7 @@ class MovieCommentModel(models.Model):
 
     name = models.CharField(max_length=100)
     description = models.TextField()
+    rating = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return self.name

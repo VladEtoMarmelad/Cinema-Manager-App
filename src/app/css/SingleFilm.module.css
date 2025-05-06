@@ -1,10 +1,10 @@
 .movieInfo {
     display: flex;
-    margin-left: 22.5em;
     position: relative;
     top: 5em;
     flex-direction: row;
     column-gap: 30px;
+    flex-wrap: wrap;
 }
 
 .movieInfo section {

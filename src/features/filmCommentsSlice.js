@@ -23,9 +23,26 @@ export const fetchComments = createAsyncThunk("films/fetchComments", async (movi
         response[i].user = user
     }
 
-    console.log(response)
     return response;
 })
+
+const pathchFilmRating = async (movieId) => {
+    let response = await axios.get("http://127.0.0.1:8000/comments/");
+    response = response.data;
+    const allFilmComments = response.filter(comment => comment.movieId === movieId);
+    
+    let rating = 0
+    console.log("Брррр считаю средне значение...")
+    for (let i=0; i<allFilmComments.length; i+=1) {
+        rating = rating + allFilmComments[i].rating
+    }
+    rating = rating/allFilmComments.length
+    rating = Math.trunc(rating)
+
+    console.log(rating)
+
+    axios.patch(movieId, {rating})
+}
 
 const filmCommentsSlice = createSlice({
     name: "filmComments",
@@ -35,8 +52,11 @@ const filmCommentsSlice = createSlice({
         error: null
     },
     reducers: {
-        addComment: (state, action) => {
-            axios.post("http://127.0.0.1:8000/comments/", action.payload)
+        addComment: async (state, action) => {
+            state.status = "loading"
+            await axios.post("http://127.0.0.1:8000/comments/", action.payload)
+            pathchFilmRating(action.payload.movieId)
+
             redirect("/")
         }
     },

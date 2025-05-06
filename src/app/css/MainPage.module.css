@@ -9,8 +9,6 @@
     background-color: #d9d9d9;
     border-radius: 50px;
     transition: all 1s;
-  
-    border: 1px solid black;
   }
   
 #newFilms:hover {

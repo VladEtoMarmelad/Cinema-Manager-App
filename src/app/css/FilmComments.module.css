@@ -1,0 +1,21 @@
+#filmContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+#filmInfoContainer {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+#commentsContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+#commentsContainer div {
+    flex-wrap: wrap;
+}

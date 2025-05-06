@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { redirect } from 'next/navigation';
 
 export const fetchFilms = createAsyncThunk('films/fetchFilms', async () => {
     const response = await axios.get("http://127.0.0.1:8000/movies/");
@@ -14,13 +13,7 @@ const filmSlice = createSlice({
         status: "idle",
         error: null
     },
-    reducers: {
-        addFilm: (state, action) => {
-            console.log(action.payload);
-            axios.post("http://127.0.0.1:8000/movies/", action.payload);
-            redirect("/")
-        } 
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchFilms.pending, (state) => {

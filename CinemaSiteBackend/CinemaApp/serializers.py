@@ -25,7 +25,9 @@ class MovieSerializer(serializers.HyperlinkedModelSerializer):
             "duration",
             "director",
             "scenarist",
-            "production"
+            "production",
+            "poster",
+            "rating"
         ]
 
 class MovieCommentSerializer(serializers.HyperlinkedModelSerializer):
@@ -36,5 +38,6 @@ class MovieCommentSerializer(serializers.HyperlinkedModelSerializer):
             "movieId",
             "userId",
             "name",
-            "description"
+            "description",
+            "rating"
         ]

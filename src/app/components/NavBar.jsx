@@ -9,27 +9,38 @@ const NavBar = () => {
     
     const session = useSession();
 
+    if (session.status === "loading") return <h5>Загрузка...</h5>
+
     return (
         <div className={styles.NavBar}>
-            <Link href="/">Главная</Link>
-            <Link href="/second">To second</Link>
+            <Link href="/" >Главная <i className="bi bi-house-fill"/></Link>
 
-            <hr/>
-
-            {session.data && 
-            <>
-                <h2>{session.data.user.name}</h2>
-
-                <button onClick={() => SignOut()} className="blackButton" style={{width:'75%', alignSelf:'center'}}>Выйти из аккаунта</button>
-            </>
+            {session.data &&
+                session.data.user.admin &&
+                <section>
+                    <hr/>
+                    <div style={{marginTop:'30px'}}>
+                        <h4>Админские страницы</h4>
+                        <Link href="/film/add">Добавить фильм <strong>+</strong></Link>
+                    </div>
+                </section>
             }
 
-            {!session.data && 
-            <>
-                <Link href="/signin">Войти в аккаунт</Link>
-            </>
-            }
+            <hr style={{marginTop: '70vh'}}/>
 
+            <div name="authorizationSection">
+                {session.data && 
+                <>
+                    <h2>{session.data.user.name}</h2>
+
+                    <button onClick={() => SignOut()} className="blackButton" style={{width:'75%'}}>Выйти из аккаунта</button>
+                </>
+                }
+
+                {!session.data && 
+                    <Link href="/signin">Войти в аккаунт <i className="bi bi-box-arrow-in-left"/></Link>
+                }
+            </div>
         </div>
     )
 }

@@ -39,7 +39,65 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: revert;
 }
 
-input {
-  border: 1px solid black;
-  border-radius: 10px;
+select,
+::picker(select) {
+  appearance: base-select;
+}
+
+input, textarea, select {
+  width: 75%;
+  margin-top: 30px;
+  border-bottom: 1px solid rgba(30, 30, 30, 0.5);
+  transition: all 0.05s;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-bottom: 3px solid rgba(30, 30, 30, 0.55);
+}
+
+select::picker-icon {
+  color: #999;
+  transition: 0.4s rotate;
+}
+
+select:open::picker-icon {
+  rotate: 180deg;
+}
+
+::picker(select) {
+  opacity: 0;
+  transition: all 0.75s allow-discrete;
+}
+
+::picker(select):popover-open {
+  opacity: 1;
+}
+
+.grayButton{
+  padding: 7.5px 5px 7.5px 5px;
+  border-radius: 15px;
+  color: #1e1e1e;
+  transition: all 0.5s;
+}
+
+.grayButton:hover {
+  cursor: pointer;
+  background-color: rgba(30, 30, 30, 0.1);
+}
+
+#likePoster {
+  background-color: #2d2d2d;
+  border-radius: 15px;
+  width: 300px;
+  height: 500px;
+}
+
+#likeAvatarCircle {
+  position: relative;
+  top: 40px;
+  background-color: #2d2d2d;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
 }

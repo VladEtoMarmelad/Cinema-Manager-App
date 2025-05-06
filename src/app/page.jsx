@@ -49,7 +49,6 @@ const MainPage = () => {
 
                         <Link href={`/film?id=${film.id}`} style={{height:'fit-content', marginLeft:'5px'}}>
                             <h2>{film.ageRating}+ {film.name}</h2>
-                            <h3>Бу бу бу ещё какая-то информация</h3>
                         </Link>
                     </div>
                 )} 

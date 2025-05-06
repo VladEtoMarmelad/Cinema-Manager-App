@@ -4,12 +4,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { fetchFilms } from "@/features/filmsSlice";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { FilmInfo } from "../components/FilmInfo";
 import styles from "@/app/css/SingleFilm.module.css";
-
-const FeatureComponent = (props) => {
-    return <><h4>{props.title}: <span>{props.value}</span></h4></>
-}
 
 const SingleFilm = () => {
 
@@ -36,29 +32,10 @@ const SingleFilm = () => {
     if (status !== "loading" && !film) return <p>Фильм не найден</p>
 
     return (
-        <div className={styles.movieInfo}>
-            <section id={styles.posterSection}>
-                <div className={styles.imageLikeDiv}/>
-            </section>
-            <section id={styles.infoSection}>
-                <h1>{film.name}</h1>
-                <div style={{marginTop:'30px', marginBottom:'30px'}}>
-                    <FeatureComponent title="Возрастное ограничение" value={`${film.ageRating}+`}/>
-                    <FeatureComponent title="Год" value={film.publishYear}/>
-                    <FeatureComponent title="Язык сеанса" value={film.language}/>
-                    <FeatureComponent title="Студия" value={film.studio}/>
-                    <FeatureComponent title="Длительность" value={film.duration}/>
-                    <FeatureComponent title="Режисёр" value={film.director}/>
-                    <FeatureComponent title="Сценарист" value={film.scenarist}/>
-                    <FeatureComponent title="Производство" value={film.production}/>
-                </div>
-                <p>{film.description}</p>
+        <div className={styles.movieInfo} style={{marginLeft:'22.5em'}}>
 
-                <Link href={`/film/comments/add?id=${filmId}`}>Написать комментарий</Link>
-                <Link href={`/film/comments?id=${filmId}`} style={{marginLeft:'15px'}}>Читать коментарии</Link>
-                <h3 style={{marginTop:'30px'}}>Смотрите также:</h3>
+            <FilmInfo filmInfo={film} showCommentsLink={true} showSimilar={true} showPoster={true}/>
 
-            </section>
             <section id={styles.timeTable}>
                 <h3>Расписание сеансов</h3>
             </section>

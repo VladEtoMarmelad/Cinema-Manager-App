@@ -1,0 +1,73 @@
+"use client"
+
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { addComment } from "@/features/filmCommentsSlice";
+import { useDispatch } from "react-redux";
+
+const AddFilmComment = () => {
+    
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [rating, setRating] = useState("");
+
+    const searchParams = useSearchParams();
+    const filmId = Number(searchParams.get("id"));
+    const session = useSession();
+    const dispatch = useDispatch();
+
+    const addFilmComment = (e) => {
+        e.preventDefault();
+        const userId = session.data.user.id
+        dispatch(
+            addComment({
+                name: name,
+                description: description,
+                rating: rating,
+
+                movieId: `http://127.0.0.1:8000/movies/${filmId}/`,
+                userId: `http://127.0.0.1:8000/users/${userId}/`
+            })
+        )
+    }
+
+    if (session.status === "loading") return <h1>Загрузка...</h1>
+    if (session.status === "unauthenticated") return <h1>Для добавление комментария требуется войти в аккаунт</h1>
+
+    return (
+        <form onSubmit={addFilmComment}>
+
+            <input 
+                value={name} 
+                onChange={(e) => {setName(e.target.value)}} 
+                placeholder="Заголовок комментария..."
+            /><br/>
+
+            <input 
+                type="number"
+                value={rating} 
+                min={1}
+                max={10}
+                onChange={
+                    (e) => {setRating(e.target.value)}
+                } 
+                placeholder="Оценка фильма..."
+            /><br/>
+
+            <textarea 
+                value={description} 
+                onChange={(e) => {setDescription(e.target.value)}} 
+                placeholder="Описание комментария..."
+            /><br/>
+
+            {name.length > 0 && description.length > 0 && 
+                <button type="submit" className="grayButton" style={{position:'relative', left:'65em'}}>
+                    Оставить комментарий <i className="bi bi-send-fill"/>
+                </button>
+            }
+        </form>
+    )
+}
+
+export { AddFilmComment };
