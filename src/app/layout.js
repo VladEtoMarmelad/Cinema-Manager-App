@@ -28,7 +28,9 @@ export default function RootLayout({ children }) {
         <SessionProvider>
         <Provider store={store}>
           <NavBar/>
-          {children}
+          <div style={{marginLeft:'22.5em'}}>
+            {children}
+          </div>
         </Provider>
         </SessionProvider>
       </body>

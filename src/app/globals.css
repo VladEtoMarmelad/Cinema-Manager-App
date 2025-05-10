@@ -22,18 +22,6 @@ a {
   transition: all 0.5s;
 }
 
-.blackButton {
-  color: #f5f5f5;
-  background-color: #2c2c2c;
-  border-radius: 7.5px;
-}
-
-.blackButton:hover {
-  cursor: pointer;
-  background-color: #1e1e1e;
-  color: white
-}
-
 h1, h2, h3, h4, h5, h6 {
   font-size: revert;
   font-weight: revert;
@@ -86,18 +74,22 @@ select:open::picker-icon {
   background-color: rgba(30, 30, 30, 0.1);
 }
 
+.blackButton {
+  padding: 7.5px 5px 7.5px 5px;
+  border-radius: 15px;
+  color: white;
+  background-color: #1e1e1e;
+  transition: all 0.5s;
+}
+
+.blackButton:hover {
+  cursor: pointer;
+  background-color: rgba(30, 30, 30, 0.75);
+}
+
 #likePoster {
   background-color: #2d2d2d;
   border-radius: 15px;
   width: 300px;
   height: 500px;
-}
-
-#likeAvatarCircle {
-  position: relative;
-  top: 40px;
-  background-color: #2d2d2d;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
 }

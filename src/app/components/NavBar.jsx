@@ -29,16 +29,19 @@ const NavBar = () => {
             <hr style={{marginTop: '70vh'}}/>
 
             <div name="authorizationSection">
-                {session.data && 
-                <>
-                    <h2>{session.data.user.name}</h2>
+                {session.status === "authenticated" && 
+                    <>
+                        <h2>{session.data.user.name}</h2>
 
-                    <button onClick={() => SignOut()} className="blackButton" style={{width:'75%'}}>Выйти из аккаунта</button>
-                </>
+                        <button onClick={() => SignOut()} className="blackButton" style={{width:'75%'}}>Выйти из аккаунта <i className="bi bi-box-arrow-right"/></button>
+                    </>
                 }
 
-                {!session.data && 
-                    <Link href="/signin">Войти в аккаунт <i className="bi bi-box-arrow-in-left"/></Link>
+                {session.status === "unauthenticated" && 
+                    <>
+                        <Link href="/signin" style={{marginTop:'25px'}}>Войти в аккаунт <i className="bi bi-box-arrow-in-left"/></Link>
+                        <Link href="/register" style={{marginTop:'25px'}}>Зарегестрироваться <i className="bi bi-person-plus-fill"/></Link>
+                    </>
                 }
             </div>
         </div>

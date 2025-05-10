@@ -50,8 +50,7 @@ const FilmInteract = () => {
     }
 
     return (
-        <div style={{marginLeft:'20em'}}>
-            
+        <>
             <div className={styles.movieInfo} style={{marginLeft:'none', width:'75%'}}>
                 <FilmInfo filmInfo={filmInfo} showPoster={showPoster}/>
             </div>
@@ -157,9 +156,9 @@ const FilmInteract = () => {
                     onChange={(e) => {e.preventDefault(); setShowPoster(e.target.files[0] && true || false)}}
                 /><br/>
 
-                <button type="submit" className="grayButton" style={{marginTop:'30px'}}>Добавить фильм</button>
+                <button type="submit" className="blackButton" style={{marginTop:'30px'}}>Добавить фильм</button>
             </form>
-        </div>
+        </>
     )
 }
 

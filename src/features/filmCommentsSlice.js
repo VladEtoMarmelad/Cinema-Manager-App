@@ -9,8 +9,32 @@ const URLSlice = (url, lettersBeforeID) => {
     return slicedURL
 }
 
-export const fetchComments = createAsyncThunk("films/fetchComments", async (movieId) => {
+const pathchFilmRating = async (movieId) => {
+
+    if (typeof movieId === "number") {
+        movieId = `http://127.0.0.1:8000/movies/${movieId}/`
+    }
+
+    let response = await axios.get("http://127.0.0.1:8000/comments/");
+    response = response.data;
+    const allFilmComments = response.filter(comment => comment.movieId === movieId);
     
+    let rating = 0
+    for (let i=0; i<allFilmComments.length; i+=1) {
+        rating = rating + allFilmComments[i].rating
+    }
+    if (allFilmComments.length>0) {
+        rating = rating/allFilmComments.length
+    }
+    rating = Math.trunc(rating)
+
+    axios.patch(movieId, {rating})
+    redirect("/")
+}
+
+export const fetchComments = createAsyncThunk("films/fetchComments", async (data) => {
+    const {movieId, userId} = data 
+
     let response = await axios.get("http://127.0.0.1:8000/comments/");
     response = response.data;
     response = response.filter(comment => URLSlice(comment.movieId, 29) === movieId);
@@ -23,26 +47,26 @@ export const fetchComments = createAsyncThunk("films/fetchComments", async (movi
         response[i].user = user
     }
 
+    if (userId) {
+        const firstComment = response.find(comment => comment.user.id === userId)
+        if (firstComment) {
+            response = response.filter(comment => comment.id !== firstComment.id)
+            response.unshift(firstComment)
+        }
+    }
+
     return response;
 })
 
-const pathchFilmRating = async (movieId) => {
-    let response = await axios.get("http://127.0.0.1:8000/comments/");
-    response = response.data;
-    const allFilmComments = response.filter(comment => comment.movieId === movieId);
-    
-    let rating = 0
-    console.log("Брррр считаю средне значение...")
-    for (let i=0; i<allFilmComments.length; i+=1) {
-        rating = rating + allFilmComments[i].rating
-    }
-    rating = rating/allFilmComments.length
-    rating = Math.trunc(rating)
+export const addComment = createAsyncThunk("films/addComment", async (commentData) => {
+    await axios.post("http://127.0.0.1:8000/comments/", commentData)
+    pathchFilmRating(commentData.movieId)
+})
 
-    console.log(rating)
-
-    axios.patch(movieId, {rating})
-}
+export const deleteComment = createAsyncThunk("films/deleteComment", async (commentData) => {
+    await axios.delete(`http://127.0.0.1:8000/comments/${commentData.commentId}/`)
+    pathchFilmRating(commentData.movieId)
+})
 
 const filmCommentsSlice = createSlice({
     name: "filmComments",
@@ -51,15 +75,7 @@ const filmCommentsSlice = createSlice({
         status: "idle",
         error: null
     },
-    reducers: {
-        addComment: async (state, action) => {
-            state.status = "loading"
-            await axios.post("http://127.0.0.1:8000/comments/", action.payload)
-            pathchFilmRating(action.payload.movieId)
-
-            redirect("/")
-        }
-    },
+    reducers: {},
     extraReducers: (builder) => {
         builder
             .addCase(fetchComments.pending, (state) => {
@@ -73,8 +89,18 @@ const filmCommentsSlice = createSlice({
                 state.status = 'failed';
                 state.error = action.error.message;
             })
+
+            .addCase(addComment.pending, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(addComment.fulfilled, (state) => {
+                state.status = 'loading';
+            })
+            .addCase(addComment.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message;
+            })
     }
 });
 
 export default filmCommentsSlice.reducer;
-export const { addComment } = filmCommentsSlice.actions;

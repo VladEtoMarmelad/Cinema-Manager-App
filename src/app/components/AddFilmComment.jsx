@@ -3,8 +3,8 @@
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { addComment } from "@/features/filmCommentsSlice";
 import { useDispatch } from "react-redux";
+import { addComment } from "@/features/filmCommentsSlice";
 
 const AddFilmComment = () => {
     
@@ -62,7 +62,7 @@ const AddFilmComment = () => {
             /><br/>
 
             {name.length > 0 && description.length > 0 && 
-                <button type="submit" className="grayButton" style={{position:'relative', left:'65em'}}>
+                <button type="submit" className="blackButton" style={{position:'relative', left:'65em'}}>
                     Оставить комментарий <i className="bi bi-send-fill"/>
                 </button>
             }

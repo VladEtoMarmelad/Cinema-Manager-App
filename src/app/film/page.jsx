@@ -32,7 +32,7 @@ const SingleFilm = () => {
     if (status !== "loading" && !film) return <p>Фильм не найден</p>
 
     return (
-        <div className={styles.movieInfo} style={{marginLeft:'22.5em'}}>
+        <div className={styles.movieInfo}>
 
             <FilmInfo filmInfo={film} showCommentsLink={true} showSimilar={true} showPoster={true}/>
 
