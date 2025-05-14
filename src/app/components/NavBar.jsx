@@ -15,18 +15,24 @@ const NavBar = () => {
         <div className={styles.NavBar}>
             <Link href="/" >Главная <i className="bi bi-house-fill"/></Link>
 
-            {session.data &&
-                session.data.user.admin &&
+            {session.status === "authenticated" &&
                 <section>
-                    <hr/>
-                    <div style={{marginTop:'30px'}}>
-                        <h4>Админские страницы</h4>
-                        <Link href="/film/add">Добавить фильм <strong>+</strong></Link>
-                    </div>
+                    <Link href="/cinema/add">Зарегестрировать кинотеатр <strong>+</strong></Link>
                 </section>
             }
 
-            <hr style={{marginTop: '70vh'}}/>
+            {session.status === "authenticated" &&
+                session.data.user.admin &&
+                    <section>
+                        <hr/>
+                        <div style={{marginTop:'30px'}}>
+                            <h4>Админские страницы</h4>
+                            <Link href="/film/add">Добавить фильм <strong>+</strong></Link>
+                        </div>
+                    </section>
+            }
+
+            <hr style={{marginTop: session.status === "unauthenticated" && "70vh" || "62.5vh"}}/>
 
             <div name="authorizationSection">
                 {session.status === "authenticated" && 

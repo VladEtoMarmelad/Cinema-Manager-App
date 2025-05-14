@@ -1,33 +1,65 @@
 "use client"
 
-import { SignIn } from "@/sign-in";
-import { useState } from "react";
 import Link from "next/link";
-import styles from "@/app/css/Register.module.css";
+import { SignInRedux } from "@/features/usersSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { changeUserInfo } from "@/features/usersSlice";
 
 const SignInPage = () => {
     
-    const [name, setName] = useState("");
-    const [password, setPassword] = useState("");
+    const userInfo = useSelector((state) => state.users.userInfo)
+    const validationErrors = useSelector((state) => state.users.validationErrors)
+
+    const dispatch = useDispatch();
+
+    const changeUserInfoHandler = (field, value) => {
+        dispatch(changeUserInfo({field: field, value: value}))
+    }
 
     const formAuthorizeHandler = (e) => {
         e.preventDefault();
-        SignIn({name, password})
+        dispatch(SignInRedux({
+            name: userInfo.name,
+            password: userInfo.password
+        }))
     }
 
     return (
-        <>
+        <div style={{position:'relative', top:'15px'}}>
+
+            {validationErrors.length > 0 && 
+                <section className="errorSection">
+                    {
+                        validationErrors.map((message, index) => 
+                            <li key={index}>{message}</li>
+                        )
+                    }
+                </section>
+            }
+
             <form onSubmit={formAuthorizeHandler}>
-                <input id="nameInput" name="name" value={name} onChange={(e) => {e.preventDefault(); setName(e.target.value)}} placeholder="Имя пользователя..."/><br/>
-                <input id="passwordInput" name="password" value={password} onChange={(e) => {e.preventDefault(); setPassword(e.target.value)}} placeholder="Пароль..."/><br/>
-                <span id={styles.container}>
+                <input 
+                    type="text"
+                    value={userInfo.name} 
+                    onChange={(e) => changeUserInfoHandler("name", e.target.value)} 
+                    placeholder="Имя пользователя..."
+                /><br/>
+
+                <input 
+                    type="password" 
+                    value={userInfo.password} 
+                    onChange={(e) => changeUserInfoHandler("password", e.target.value)} 
+                    placeholder="Пароль..."
+                /><br/>
+
+                <span className="centerContainer">
                     <button type="submit" className="blackButton">Войти в аккаунт</button>
                 </span>
             </form>
-            <span id={styles.container}>
+            <span className="centerContainer">
                 <Link href="/register" className="grayButton">Нету аккаунта? Зарегестрируйтесь!</Link>
             </span>
-        </>
+        </div>
     )
 }
 

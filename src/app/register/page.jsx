@@ -4,11 +4,11 @@ import { useSelector, useDispatch } from "react-redux"
 import { changeUserInfo } from "@/features/usersSlice"
 import { addUser } from "@/features/usersSlice"
 import Link from "next/link";
-import styles from "@/app/css/Register.module.css";
 
 const Register = () => {
     
     const userInfo = useSelector((state) => state.users.userInfo)
+    const validationErrors = useSelector((state) => state.users.validationErrors)
 
     const dispatch = useDispatch();
 
@@ -26,7 +26,20 @@ const Register = () => {
     }
 
     return (
-        <>
+        <div style={{position:'relative', top:'15px'}}>
+
+            {validationErrors.length > 0 && 
+                <section className="errorSection">
+                    <ol>
+                        {
+                            validationErrors.map((message, index) => 
+                                <li key={index}>{index+1}. {message}</li>
+                            )
+                        }
+                    </ol>
+                </section>
+            }
+
             <form onSubmit={registerHandler}>
                 <input 
                     type="text"
@@ -49,14 +62,14 @@ const Register = () => {
                     placeholder="Повторите пароль..."
                 /><br/>
 
-                <span id={styles.container}>
+                <span className="centerContainer">
                     <button type="submit" className="blackButton">Зарегестрироваться</button>
                 </span>
             </form>
-            <span id={styles.container}>
+            <span className="centerContainer">
                 <Link href="signin" className="grayButton">Уже есть аккаунт? Войти...</Link>
             </span>
-        </>
+        </div>
     )
 }
 

@@ -12,7 +12,8 @@ const FilmInteract = () => {
 
     const dispatch = useDispatch();
     const filmInfo = useSelector((state) => state.filmInteract.filmInfo)
-    
+    const validationErrors = useSelector((state) => state.filmInteract.validationErrors)
+
     const changeFilmInfoHandler = (field, value) => {
         dispatch(changeFilmInfo({field: field, value: value}))
     }
@@ -75,14 +76,14 @@ const FilmInteract = () => {
                 <input 
                     type="number" 
                     value={filmInfo.ageRating} 
-                    onChange={(e) => changeFilmInfoHandler("ageRating", e.target.value)} 
+                    onChange={(e) => changeFilmInfoHandler("ageRating", Number(e.target.value))} 
                     placeholder="Возрастное ограничение фильма..."
                 /><br/>
 
                 <input 
                     type="number" 
                     value={filmInfo.publishYear} 
-                    onChange={(e) => changeFilmInfoHandler("publishYear", e.target.value)} 
+                    onChange={(e) => changeFilmInfoHandler("publishYear", Number(e.target.value))} 
                     placeholder="Год релиза фильма..."
                 /><br/>
                 
@@ -156,8 +157,23 @@ const FilmInteract = () => {
                     onChange={(e) => {e.preventDefault(); setShowPoster(e.target.files[0] && true || false)}}
                 /><br/>
 
-                <button type="submit" className="blackButton" style={{marginTop:'30px'}}>Добавить фильм</button>
+                <span className="centerContainer">
+                    <button 
+                        type="submit" 
+                        className="blackButton" 
+                        style={{marginTop:'30px', marginBottom:'15px'}}
+                    >Добавить фильм</button>
+                </span>
             </form>
+
+            {validationErrors.length > 0 &&
+                <section className="errorSection" style={{marginBottom: '15px'}}>
+                    {validationErrors.map((error, index) => 
+                        <li key={index}>{error}</li>
+                    )}
+                </section>
+            }
+
         </>
     )
 }

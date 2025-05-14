@@ -2,12 +2,19 @@ from django.db import models
 
 # Create your models here.
 
+class CinemaModel(models.Model):
+    id = models.BigAutoField(primary_key=True)
+
+    name = models.CharField(max_length=100)
+
 class UserModel(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
     password = models.CharField(default="12345", max_length=100)
 
     admin = models.BooleanField(default=False)
+
+    cinemaAdmin = models.ForeignKey(CinemaModel, on_delete=models.RESTRICT, null=True)
 
 class MovieModel(models.Model):
     id = models.BigAutoField(primary_key=True)

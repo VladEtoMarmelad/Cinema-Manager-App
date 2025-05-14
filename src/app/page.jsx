@@ -29,7 +29,7 @@ const MainPage = () => {
     if (status === 'failed') return <p>Ошибка загрузки</p>;
 
     return (
-        <div className="text-amber-600">
+        <div >
             <Link id={styles.newFilms} href={lastFilm ? `/film?id=${lastFilm.id}` : "/"}>
                 {
                     lastFilm &&

@@ -1,6 +1,36 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { redirect } from 'next/navigation';
+import { z } from 'zod';
+import { filmSchema } from '@/zod/filmSchema';
+
+export const addFilm = createAsyncThunk("films/addFilm", async (filmData) => {
+    try {
+        await filmSchema.parseAsync(filmData)
+
+        const poster = document.getElementById("posterInput").files[0]
+        let data = Object.assign({}, filmData)
+        data.poster = poster
+
+        axios.post("http://127.0.0.1:8000/movies/", data, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            const validationErrors = []
+
+            for (let i=0; i<error.errors.length; i+=1) {
+                validationErrors.push(error.errors[i].message)
+            }
+
+            return validationErrors
+        } else {
+            console.error("Unexpected error:", error);
+        }
+    }
+})
 
 const filmInteractSlice = createSlice({
     name: "filmInteract",
@@ -18,31 +48,27 @@ const filmInteractSlice = createSlice({
             production: ""
         },
         status: "idle",
-        error: null
+        error: null,
+        validationErrors: []
     },
     reducers: {
         changeFilmInfo: (state, action) => {
             const {field, value} = action.payload
             state.filmInfo[field] = value
-        },
-        addFilm: (state, action) => {
-            const poster = document.getElementById("posterInput").files[0]
-            let data = Object.assign({}, action.payload)
-            data.poster = poster
-
-            if (Object.values(data).every(el => el !== "")) {
-                axios.post("http://127.0.0.1:8000/movies/", data, {
-                    headers: {
-                        "Content-Type": "multipart/form-data"
+        }
+    },
+    extraReducers: (builder) => {
+            builder
+                .addCase(addFilm.fulfilled, (state, action) => {
+                    if (action.payload) {
+                        state.validationErrors = action.payload
                     }
-                });
-                redirect("/")
-            } else {
-                alert("Заполните все поля!")
-            }
-        } 
-    }
+                })
+                .addCase(addFilm.pending, (state) => {
+                    state.validationErrors = []
+                })
+        }
 });
 
 export default filmInteractSlice.reducer;
-export const { addFilm, changeFilmInfo } = filmInteractSlice.actions;
+export const { changeFilmInfo } = filmInteractSlice.actions;
