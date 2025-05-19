@@ -1,13 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios'; 
 import { redirect } from 'next/navigation';
-
-const URLSlice = (url, lettersBeforeID) => {
-    let slicedURL = url.slice(lettersBeforeID)
-    slicedURL = slicedURL.slice(0, -1)
-    slicedURL = Number(slicedURL)
-    return slicedURL
-}
+import { URLSlice } from '@/URLSlice.mjs';
 
 const pathchFilmRating = async (movieId) => {
 

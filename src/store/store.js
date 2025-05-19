@@ -4,6 +4,7 @@ import filmCommentsReducer from '@/features/filmCommentsSlice';
 import filmInteractReducer from '@/features/filmInteractSlice';
 import cinemaReducer from "@/features/cinemaSlice";
 import usersReducer from "@/features/usersSlice"
+import roomReducer from "@/features/roomSlice"
 
 export const store = configureStore({
     reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
         filmComments: filmCommentsReducer,
         filmInteract: filmInteractReducer,
         cinema: cinemaReducer,
-        users: usersReducer
+        users: usersReducer,
+        rooms: roomReducer
     }
 });

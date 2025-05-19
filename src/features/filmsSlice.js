@@ -1,9 +1,20 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { URLSlice } from '@/URLSlice.mjs';
 import axios from 'axios';
 
-export const fetchFilms = createAsyncThunk('films/fetchFilms', async () => {
-    const response = await axios.get("http://127.0.0.1:8000/movies/");
-    return response.data;
+export const fetchFilms = createAsyncThunk("films/fetchFilms", async () => {
+    let allFilms = await axios.get("http://127.0.0.1:8000/movies/");
+    allFilms = allFilms.data
+
+    let allRooms = await axios.get("http://127.0.0.1:8000/cinemaRooms/");
+    allRooms = allRooms.data
+
+    for (let i=0; i<allFilms.length; i+=1) {
+        allFilms[i].timeTable = allRooms.filter(room => URLSlice(room.nextFilm, 29) === allFilms[i].id)
+    }
+
+    console.log(allFilms)
+    return allFilms;
 });
 
 const filmSlice = createSlice({

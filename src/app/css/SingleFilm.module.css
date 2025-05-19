@@ -46,6 +46,9 @@
     position: sticky;
     top: 5em;
     background-color: #2d2d2d;
+    color: white;
     border: 1px solid black;
     border-radius: 15px;
+    flex-wrap: wrap;
+    padding: 5px;
 }

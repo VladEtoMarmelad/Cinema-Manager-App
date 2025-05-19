@@ -45,3 +45,13 @@ class MovieCommentModel(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class CinemaRoomModel(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    cinemaId = models.ForeignKey(CinemaModel, on_delete=models.CASCADE)
+
+    nextFilm = models.ForeignKey(MovieModel, on_delete=models.RESTRICT, null=True)
+    nextFilmTime = models.DateTimeField(null=True)
+
+    seats = models.JSONField(default=dict)

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { fetchFilms } from "@/features/filmsSlice";
 import { useSearchParams } from "next/navigation";
 import { FilmInfo } from "../components/FilmInfo";
+import Link from "next/link";
 import styles from "@/app/css/SingleFilm.module.css";
 
 const SingleFilm = () => {
@@ -34,10 +35,23 @@ const SingleFilm = () => {
     return (
         <div className={styles.movieInfo}>
 
-            <FilmInfo filmInfo={film} showCommentsLink={true} showSimilar={true} showPoster={true}/>
+            <FilmInfo 
+                filmInfo={film} 
+                showCommentsLink={true} 
+                showSimilar={true} 
+                showPoster={true}
+            />
 
             <section id={styles.timeTable}>
-                <h3>Расписание сеансов</h3>
+                <h3>Расписание сеансов</h3><br/>
+                {film.timeTable.map((time, index) => 
+                        <Link 
+                            key={index} 
+                            href={`/cinema/room?id=${time.id}`}
+                        >
+                            {time.nextFilmTime}
+                        </Link>
+                )}
             </section>
         </div>
     )
