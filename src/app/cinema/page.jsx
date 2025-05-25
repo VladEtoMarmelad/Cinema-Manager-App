@@ -4,10 +4,12 @@ import { useSelector, useDispatch } from "react-redux"
 import { fetchCinemas } from "@/features/cinemaSlice"
 import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 const CinemaPage = () => {
-    
+    const session = useSession();
+
     const cinemas = useSelector((state) => state.cinema.cinemas)
     const status = useSelector((state) => state.cinema.status)
     const error = useSelector((state) => state.cinema.error)
@@ -31,11 +33,12 @@ const CinemaPage = () => {
         }
     }, [cinemas])
 
-    if (status === "loading" || !cinema) return <h2>Загрузка...</h2>
+    if (status === "loading" || !cinema || session.status === "loading") return <h2>Загрузка...</h2>
 
     return (
         <>
             <h1>{cinema.name}</h1>
+
             <h2>Залы кинотеатра:</h2>
             {cinema.rooms.map(room => 
                 <div key={room.id}>

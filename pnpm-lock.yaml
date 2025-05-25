@@ -14,12 +14,18 @@ importers:
       axios:
         specifier: ^1.8.4
         version: 1.8.4
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
       next:
         specifier: 15.2.4
         version: 15.2.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next-auth:
         specifier: 5.0.0-beta.26
-        version: 5.0.0-beta.26(next@15.2.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
+        version: 5.0.0-beta.26(next@15.2.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(nodemailer@7.0.3)(react@19.1.0)
+      nodemailer:
+        specifier: ^7.0.3
+        version: 7.0.3
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -359,6 +365,9 @@ packages:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
 
+  date-fns@4.1.0:
+    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
+
   delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
@@ -565,6 +574,10 @@ packages:
       sass:
         optional: true
 
+  nodemailer@7.0.3:
+    resolution: {integrity: sha512-Ajq6Sz1x7cIK3pN6KesGTah+1gnwMnx5gKl3piQlQQE/PwyJ4Mbc8is2psWYxK3RJTVeqsDaCv8ZzXLCDHMTZw==}
+    engines: {node: '>=6.0.0'}
+
   oauth4webapi@3.5.0:
     resolution: {integrity: sha512-DF3mLWNuxPkxJkHmWxbSFz4aE5CjWOsm465VBfBdWzmzX4Mg3vF8icxK+iKqfdWrIumBJ2TaoNQWx+SQc2bsPQ==}
 
@@ -680,13 +693,15 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@auth/core@0.39.0':
+  '@auth/core@0.39.0(nodemailer@7.0.3)':
     dependencies:
       '@panva/hkdf': 1.2.1
       jose: 6.0.10
       oauth4webapi: 3.5.0
       preact: 10.24.3
       preact-render-to-string: 6.5.11(preact@10.24.3)
+    optionalDependencies:
+      nodemailer: 7.0.3
 
   '@emnapi/runtime@1.4.0':
     dependencies:
@@ -923,6 +938,8 @@ snapshots:
     dependencies:
       delayed-stream: 1.0.0
 
+  date-fns@4.1.0: {}
+
   delayed-stream@1.0.0: {}
 
   detect-libc@2.0.3: {}
@@ -1060,11 +1077,13 @@ snapshots:
 
   nanoid@3.3.11: {}
 
-  next-auth@5.0.0-beta.26(next@15.2.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0):
+  next-auth@5.0.0-beta.26(next@15.2.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(nodemailer@7.0.3)(react@19.1.0):
     dependencies:
-      '@auth/core': 0.39.0
+      '@auth/core': 0.39.0(nodemailer@7.0.3)
       next: 15.2.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       react: 19.1.0
+    optionalDependencies:
+      nodemailer: 7.0.3
 
   next@15.2.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
@@ -1090,6 +1109,8 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
       - babel-plugin-macros
+
+  nodemailer@7.0.3: {}
 
   oauth4webapi@3.5.0: {}
 

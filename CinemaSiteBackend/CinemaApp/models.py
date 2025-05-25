@@ -51,7 +51,21 @@ class CinemaRoomModel(models.Model):
     id = models.BigAutoField(primary_key=True)
     cinemaId = models.ForeignKey(CinemaModel, on_delete=models.CASCADE)
 
-    nextFilm = models.ForeignKey(MovieModel, on_delete=models.RESTRICT, null=True)
-    nextFilmTime = models.DateTimeField(null=True)
+    defaultSeats = models.JSONField(default=dict)
 
-    seats = models.JSONField(default=dict)
+class FilmSessionModel(models.Model):
+   id = models.BigAutoField(primary_key=True)
+   roomId = models.ForeignKey(CinemaRoomModel, on_delete=models.CASCADE)
+
+   film = models.ForeignKey(MovieModel, on_delete=models.CASCADE, null=True)
+   sessionTime = models.DateTimeField(null=True)
+
+   seats = models.JSONField(default=dict)
+
+   '''
+   n - number of seat
+   seats in seatsArrays can be Bn, Vn or On
+   B-Basis
+   V-VIP
+   O-Owned
+   '''

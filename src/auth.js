@@ -1,34 +1,25 @@
 import axios from "axios";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import { URLSlice } from "./URLSlice.mjs";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
     providers: [
         Credentials({
-            //credentials: {
-            //    name: {},
-            //    password: {}
-            //},
             authorize: async (credentials) => {
                 try {
                     let user = null
-                    
-                    console.log(credentials.name)
-                    console.log(credentials.password)
 
                     user = await axios.get("http://127.0.0.1:8000/users/")
                     user = user.data.find(user => user.name === credentials.name && user.password === credentials.password)
                     user = {
                         id: user.id,
                         name: user.name,
-                        admin: user.admin
+                        admin: user.admin,
+                        cinemaAdmin: Number(URLSlice(user.cinemaAdmin, 30))
                     }
 
-                    return {
-                        id: user.id,
-                        name: user.name,
-                        admin: user.admin
-                    }
+                    return user
                 } catch (error) {
                     return null
                 }
@@ -39,12 +30,14 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         async session({ session, token }) {
             session.user.id = token.id;
             session.user.admin = token.admin;
+            session.user.cinemaAdmin = token.cinemaAdmin;
             return session;
         },
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
                 token.admin = user.admin;
+                token.cinemaAdmin = user.cinemaAdmin;
             }
             return token;
         }

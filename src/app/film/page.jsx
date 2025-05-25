@@ -47,9 +47,9 @@ const SingleFilm = () => {
                 {film.timeTable.map((time, index) => 
                         <Link 
                             key={index} 
-                            href={`/cinema/room?id=${time.id}`}
+                            href={`/cinema/filmSession?id=${time.id}`}
                         >
-                            {time.nextFilmTime}
+                            {time.sessionTime}
                         </Link>
                 )}
             </section>

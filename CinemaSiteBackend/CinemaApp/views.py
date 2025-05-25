@@ -4,8 +4,8 @@ from django.shortcuts import render
 
 from django.shortcuts import render
 from rest_framework import viewsets
-from .models import UserModel, MovieModel, MovieCommentModel, CinemaModel, CinemaRoomModel
-from .serializers import UserSerializer, MovieSerializer, MovieCommentSerializer, CinemaSerializer, CinemaRoomSerializer
+from .models import UserModel, MovieModel, MovieCommentModel, CinemaModel, CinemaRoomModel, FilmSessionModel
+from .serializers import UserSerializer, MovieSerializer, MovieCommentSerializer, CinemaSerializer, CinemaRoomSerializer, FilmSessionSerializer
 
 # Create your views here.
 
@@ -28,3 +28,7 @@ class CinemaViewSet(viewsets.ModelViewSet):
 class CinemaRoomViewSet(viewsets.ModelViewSet):
     queryset = CinemaRoomModel.objects.all()
     serializer_class = CinemaRoomSerializer
+
+class FilmSessionViewSet(viewsets.ModelViewSet):
+    queryset = FilmSessionModel.objects.all()
+    serializer_class = FilmSessionSerializer

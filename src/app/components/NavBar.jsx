@@ -15,10 +15,16 @@ const NavBar = () => {
         <div className={styles.NavBar}>
             <Link href="/" >Главная <i className="bi bi-house-fill"/></Link>
 
-            {session.status === "authenticated" &&
+            {session.status === "authenticated" && !session.data.user.cinemaAdmin ?
                 <section>
                     <Link href="/cinema/add">Зарегестрировать кинотеатр <strong>+</strong></Link>
                 </section>
+                : session.status === "authenticated" &&
+                    <section>
+                        <Link href={`/cinema/?id=${session.data.user.cinemaAdmin}`}>
+                            Ваш кинотеатр <i className="bi bi-building-fill-gear" style={{fontSize:'20px'}}/>
+                        </Link>
+                    </section>
             }
 
             {session.status === "authenticated" &&
@@ -39,7 +45,13 @@ const NavBar = () => {
                     <>
                         <h2>{session.data.user.name}</h2>
 
-                        <button onClick={() => SignOut()} className="blackButton" style={{width:'75%'}}>Выйти из аккаунта <i className="bi bi-box-arrow-right"/></button>
+                        <button 
+                            onClick={() => SignOut()} 
+                            className="blackButton" 
+                            style={{width:'75%'}}
+                        >
+                            Выйти из аккаунта <i className="bi bi-box-arrow-right"/>
+                        </button>
                     </>
                 }
 
