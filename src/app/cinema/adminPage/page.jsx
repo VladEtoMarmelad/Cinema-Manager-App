@@ -2,11 +2,13 @@
 
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { AddRoom } from "@/app/components/AddRoom";
 import Link from "next/link";
+import styles from "@/app/css/CinemaAdminPage.module.css"
 
 const CinemaAdminPage = () => {
     const session = useSession();
-    
+
     const searchParams = useSearchParams();
     const cinemaId = Number(searchParams.get("id"));
 
@@ -15,25 +17,20 @@ const CinemaAdminPage = () => {
     if (session.status === "authenticated" && session.data.user.cinemaAdmin !== cinemaId) return <h2>Вы не являетесь админом этого кинотеатра</h2>
 
     return (
-        <>
+        <div className={styles.container}>
+
+            <AddRoom />
+
             <section>
-                <h2>Добавление комнаты</h2>
-                <form>
-                    <input
-
-                    />
-                </form>
-            </section>
-
-            <section style={{marginTop:'50px'}}>
                 <h2>Добавление сеанса кино</h2>
                 <form>
                     <input 
-                    
+                        type="datetime-local"
+                        placeholder="Время сеанса..."
                     />
                 </form>
             </section>
-        </>
+        </div>
     )
 }
 

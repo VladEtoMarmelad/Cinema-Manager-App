@@ -1,0 +1,53 @@
+.container {
+    display: flex;
+    flex-direction: row;
+}
+
+.container section {
+    width: 50%;
+    padding: 15px;
+    /* border: 3px solid red; */
+}
+
+.addSeat {
+    width: 30px;
+    height: 30px;
+    border: 1px solid black;
+    border-radius: 5px;
+    /* margin-left: 5px; */
+}
+
+.addSeat:hover {
+    cursor: pointer;
+}
+
+.basicSeat {
+    background-color: #303030;
+    color: white;
+}
+
+.VIPSeat {
+    background-color: goldenrod;
+}
+
+.noSeat {
+    background-color: #f2f2f2;
+}
+
+.span[data-descr] {
+    position: relative;
+}
+
+.span[data-descr]:hover::after {
+    content: attr(data-descr);
+    position: absolute;
+    left: 0;
+    top: 30px;
+    min-width: 175px;
+    border: 1px #aaaaaa solid;
+    border-radius: 10px;
+    background-color: white;
+    padding: 5px;
+    font-size: 14px;
+    z-index: 1;
+}

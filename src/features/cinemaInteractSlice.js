@@ -25,11 +25,43 @@ export const addCinema = createAsyncThunk("cinema/add", async (data) => {
     }
 })
 
+export const addCinemaRoom = createAsyncThunk("room/add", async (data) => {
+    let {seats, cinemaId} = data
+
+    let nextSeatNumber = -1
+    const numberedSeats = seats.map(seatRow => {
+        return seatRow.map(seat => {
+            if (seat !== "E") {
+                nextSeatNumber += 1
+                return `${seat}${nextSeatNumber}`
+            } else {
+                return seat
+            }
+        })
+    })
+
+    console.log("newSeats: ", numberedSeats)
+    console.log("cinemaId: ", cinemaId)
+
+    await axios.post("http://127.0.0.1:8000/cinemaRooms/", {
+        cinemaId: `http://127.0.0.1:8000/cinemas/${cinemaId}/`,
+        defaultSeats: {
+            seats: numberedSeats
+        }
+    })
+})
+
 const cinemaInteractSlice = createSlice({
     name: "cinemaInteract",
     initialState: {
         cinemaInfo: {
             name: ""
+        },
+        roomInfo: {
+            defaultSeats: [
+
+            ],
+            nextSeatNumber: -1
         },
         status: "idle",
         error: null,
@@ -39,6 +71,23 @@ const cinemaInteractSlice = createSlice({
         changeCinemaInfo: (state, action) => {
             const {field, value} = action.payload
             state.cinemaInfo[field] = value
+        },
+        addRow: (state) => {
+            state.roomInfo.defaultSeats.push([])
+        },
+        changeRowInfo: (state, action) => {
+            const {rowIndex, newValue} = action.payload
+            state.roomInfo.defaultSeats[rowIndex].push(`${newValue}`)
+        },
+        changeSeat: (state, action) => {
+            const {row, index} = action.payload
+            if (state.roomInfo.defaultSeats[row][index] === "B") {
+                state.roomInfo.defaultSeats[row][index] = "V"
+            } else if (state.roomInfo.defaultSeats[row][index] === "V") {
+                state.roomInfo.defaultSeats[row][index] = "E"
+            } else {
+                state.roomInfo.defaultSeats[row][index] = "B"
+            }
         }
     },
     extraReducers: (builder) => {
@@ -58,4 +107,4 @@ const cinemaInteractSlice = createSlice({
 })
 
 export default cinemaInteractSlice.reducer;
-export const { changeCinemaInfo } = cinemaInteractSlice.actions;
+export const { changeCinemaInfo, addRow, changeRowInfo, changeSeat } = cinemaInteractSlice.actions;
