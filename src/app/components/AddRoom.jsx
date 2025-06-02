@@ -7,8 +7,6 @@ import styles from "@/app/css/CinemaAdminPage.module.css"
 
 const AddSeatButton = ({index, newValue}) => {
     const dispatch = useDispatch();
-    const searchParams = useSearchParams();
-    const cinemaId = Number(searchParams.get("id"));
 
     return (
         <span className={styles.span} data-descr={
@@ -41,6 +39,7 @@ const AddSeatButton = ({index, newValue}) => {
 const AddRoom = () => {
     
     const rows = useSelector(state => state.cinemaInteract.roomInfo)
+    const validationErrors = useSelector(state => state.cinemaInteract.validationErrors)
     const dispatch = useDispatch();
 
     const searchParams = useSearchParams();
@@ -95,19 +94,29 @@ const AddRoom = () => {
                     )
                 }
                 <button 
+                    onClick={(e) => {
+                        e.preventDefault();
+                        dispatch(addRow())
+                    }}
+                    className="blackButton"
+                    style={{margin:'15px'}}
+                >
+                Добавить ряд +
+                </button>
+                <button 
                     type="submit" 
                     className="blackButton"
                 >
                     Добавить комнату
                 </button>
             </form>
-            <button 
-                onClick={() => dispatch(addRow())}
-                className="blackButton"
-                style={{margin:'15px'}}
-            >
-                Добавить ряд +
-            </button>
+            {validationErrors.length > 0 && 
+                <section className="errorSection" style={{marginTop:'25px'}}>
+                    {validationErrors.map((validationError, index) => 
+                        <li key={index}>{validationError}</li>
+                    )}
+                </section>
+            }
         </section>
     )
 }

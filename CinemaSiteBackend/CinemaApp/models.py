@@ -55,9 +55,10 @@ class CinemaRoomModel(models.Model):
 
 class FilmSessionModel(models.Model):
    id = models.BigAutoField(primary_key=True)
+   cinemaId = models.ForeignKey(CinemaModel, on_delete=models.CASCADE, null=True)
    roomId = models.ForeignKey(CinemaRoomModel, on_delete=models.CASCADE)
-
    film = models.ForeignKey(MovieModel, on_delete=models.CASCADE, null=True)
+
    sessionTime = models.DateTimeField(null=True)
 
    seats = models.JSONField(default=dict)

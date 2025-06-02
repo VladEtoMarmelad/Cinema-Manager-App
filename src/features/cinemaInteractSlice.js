@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getSession } from 'next-auth/react';
 import { SignIn } from '@/sign-in';
+import { cinemaRoomSchema } from '@/zod/cinemaRoomSchema';
+import { catchValidationErrors } from '../zod/catchValidationErrors';
 import axios from 'axios';
 
 export const addCinema = createAsyncThunk("cinema/add", async (data) => {
@@ -28,27 +30,31 @@ export const addCinema = createAsyncThunk("cinema/add", async (data) => {
 export const addCinemaRoom = createAsyncThunk("room/add", async (data) => {
     let {seats, cinemaId} = data
 
-    let nextSeatNumber = -1
-    const numberedSeats = seats.map(seatRow => {
-        return seatRow.map(seat => {
-            if (seat !== "E") {
-                nextSeatNumber += 1
-                return `${seat}${nextSeatNumber}`
-            } else {
-                return seat
+    try {
+
+        cinemaRoomSchema.parse({seats})
+
+        let nextSeatNumber = -1
+        const numberedSeats = seats.map(seatRow => {
+            return seatRow.map(seat => {
+                if (seat !== "E") {
+                    nextSeatNumber += 1
+                    return `${seat}${nextSeatNumber}`
+                } else {
+                    return seat
+                }
+            })
+        })
+
+        await axios.post("http://127.0.0.1:8000/cinemaRooms/", {
+            cinemaId: `http://127.0.0.1:8000/cinemas/${cinemaId}/`,
+            defaultSeats: {
+                seats: numberedSeats
             }
         })
-    })
-
-    console.log("newSeats: ", numberedSeats)
-    console.log("cinemaId: ", cinemaId)
-
-    await axios.post("http://127.0.0.1:8000/cinemaRooms/", {
-        cinemaId: `http://127.0.0.1:8000/cinemas/${cinemaId}/`,
-        defaultSeats: {
-            seats: numberedSeats
-        }
-    })
+    } catch (error) {
+        return catchValidationErrors(error)
+    }
 })
 
 const cinemaInteractSlice = createSlice({
@@ -95,11 +101,20 @@ const cinemaInteractSlice = createSlice({
         .addCase(addCinema.pending, (state) => {
             state.status = "loading"
         })
-        //.addCase(addCinema.fulfilled, (state, action) => {
-        //    state.cinemas = action.payload
-         //   state.status = "succeeded"
-        //})
         .addCase(addCinema.rejected, (state, action) => {
+            state.status = 'failed';
+            state.error = action.error.message;
+        })
+
+        .addCase(addCinemaRoom.pending, (state) => {
+            state.validationErrors = []
+        })
+        .addCase(addCinemaRoom.fulfilled, (state, action) => {
+            if (action.payload) {
+                state.validationErrors = action.payload
+            }
+        })
+        .addCase(addCinemaRoom.rejected, (state, action) => {
             state.status = 'failed';
             state.error = action.error.message;
         })

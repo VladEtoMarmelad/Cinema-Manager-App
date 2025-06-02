@@ -1,53 +1,70 @@
 "use client"
 
 import { useSelector, useDispatch } from "react-redux"
-import { fetchCinemas } from "@/features/cinemaSlice"
+import { fetchCinema } from "@/features/cinemaSlice"
 import { useEffect, useState } from "react"
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import styles from "@/app/css/CinemaPage.module.css";
 
 const CinemaPage = () => {
     const session = useSession();
 
-    const cinemas = useSelector((state) => state.cinema.cinemas)
+    const cinema = useSelector((state) => state.cinema.cinemas)
     const status = useSelector((state) => state.cinema.status)
     const error = useSelector((state) => state.cinema.error)
-
-    const [cinema, setCinema] = useState(null);
 
     const dispatch = useDispatch()
 
     const searchParams = useSearchParams();
     const cinemaId = Number(searchParams.get("id"));
 
+    const [filmSessionsRibbonMargin, setFilmSessionsRibbonMargin] = useState(0);
+
     useEffect(() => {
-        if (status !== "succeeded") {
-            dispatch(fetchCinemas())
-        }
+        dispatch(fetchCinema(cinemaId))
     }, [])
 
-    useEffect(() => {
-        if (cinemas.length > 0) {
-            setCinema(cinemas.find(cinema => cinema.id === cinemaId))
-        }
-    }, [cinemas])
-
-    if (status === "loading" || !cinema || session.status === "loading") return <h2>Загрузка...</h2>
+    if (error) return error
+    if (status === "loading" || session.status === "loading") return <h2>Загрузка...</h2>
 
     return (
-        <>
+        <div style={{overflow:'hidden'}}>
             <h1>{cinema.name}</h1>
 
-            <h2>Залы кинотеатра:</h2>
-            {cinema.rooms.map(room => 
-                <div key={room.id}>
-                    <h3>id комнаты: {room.id}</h3>
-                    <h4>id кинотеатра комнаты: {room.cinemaId}</h4>
-                    <Link href={`/cinema/room?id=${room.id}`} className="grayButton">Кинозал {room.id}</Link>
-                </div>
-            )}
-        </>
+            <section className={styles.ribbonContainer}>
+                <button 
+                    onClick={() => {
+                        setFilmSessionsRibbonMargin((prevValue) => prevValue+300)
+                    }}
+                    className={`${styles.circleButton} ${styles.left}`}
+                />
+
+                <section className={styles.filmSessionsRibbon} style={{left:`${filmSessionsRibbonMargin}px`}}>
+                    {cinema.filmSessions && cinema.filmSessions.map(filmSession => 
+                        <Link href={`/cinema/filmSession?id=${filmSession.id}`} key={filmSession.id}>
+                            <img src={filmSession.film.poster} style={{borderRadius:'15px'}}/>
+                            <h2>{filmSession.film.name}</h2>
+                            <h4>{filmSession.sessionTime}</h4>
+                        </Link>
+                    )}
+
+                    
+                </section>
+                    <button 
+                        onClick={() => {
+                            setFilmSessionsRibbonMargin((prevValue) => prevValue-300)
+                        }}
+                        className={`${styles.circleButton} ${styles.right}`}
+                    />
+                
+            </section>
+
+            {session.status === "authenticated" && session.data.user.cinemaAdmin === cinemaId &&
+                <Link href={`/cinema/adminPage?id=${cinemaId}`}>Админская страница</Link>
+            }
+        </div>
     )
 }
 

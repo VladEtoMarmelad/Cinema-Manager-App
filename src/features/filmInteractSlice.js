@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { z } from 'zod';
 import { filmSchema } from '@/zod/filmSchema';
+import { catchValidationErrors } from '@/zod/catchValidationErrors';
 
 export const addFilm = createAsyncThunk("films/addFilm", async (filmData) => {
     try {
@@ -18,17 +18,7 @@ export const addFilm = createAsyncThunk("films/addFilm", async (filmData) => {
         });
 
     } catch (error) {
-        if (error instanceof z.ZodError) {
-            const validationErrors = []
-
-            for (let i=0; i<error.errors.length; i+=1) {
-                validationErrors.push(error.errors[i].message)
-            }
-
-            return validationErrors
-        } else {
-            console.error("Unexpected error:", error);
-        }
+        return catchValidationErrors(error)
     }
 })
 

@@ -65,6 +65,7 @@ class FilmSessionSerializer(serializers.HyperlinkedModelSerializer):
         model = FilmSessionModel
         fields = [
             "id",
+            "cinemaId",
             "roomId",
             "film",
             "sessionTime",

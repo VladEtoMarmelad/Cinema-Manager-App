@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { AddRoom } from "@/app/components/AddRoom";
+import { AddFilmSession } from "@/app/components/AddFilmSession";
 import Link from "next/link";
 import styles from "@/app/css/CinemaAdminPage.module.css"
 
@@ -18,18 +19,9 @@ const CinemaAdminPage = () => {
 
     return (
         <div className={styles.container}>
-
             <AddRoom />
-
-            <section>
-                <h2>Добавление сеанса кино</h2>
-                <form>
-                    <input 
-                        type="datetime-local"
-                        placeholder="Время сеанса..."
-                    />
-                </form>
-            </section>
+            <hr style={{margin:'50px 0 50px 0', width:'75%'}}/>
+            <AddFilmSession />
         </div>
     )
 }

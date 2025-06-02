@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { SignIn } from "@/sign-in";
-import { z } from 'zod';
 import { userSchema } from '@/zod/userSchema';
 import { signInSchema } from '@/zod/signInSchema';
+import { catchValidationErrors } from '@/zod/catchValidationErrors';
 
 export const addUser = createAsyncThunk("users/addUser", async (userData) => {
     const {name, password, repeatPassword} = userData
@@ -23,17 +23,7 @@ export const addUser = createAsyncThunk("users/addUser", async (userData) => {
         SignIn({name, password})
 
     } catch (error) {
-        if (error instanceof z.ZodError) {
-            const validationErrors = []
-
-            for (let i=0; i<error.errors.length; i+=1) {
-                validationErrors.push(error.errors[i].message)
-            }
-
-            return validationErrors
-        } else {
-            console.error("Unexpected error:", error);
-        }
+        catchValidationErrors(error)
     }
 })
 
@@ -49,17 +39,7 @@ export const SignInRedux = createAsyncThunk("users/signIn", async (userData) => 
         SignIn({name, password})
 
     } catch (error) {
-        if (error instanceof z.ZodError) {
-            const validationErrors = []
-
-            for (let i=0; i<error.errors.length; i+=1) {
-                validationErrors.push(error.errors[i].message)
-            }
-
-            return validationErrors
-        } else {
-            console.error("Unexpected error:", error);
-        }
+        catchValidationErrors(error)
     }
     
 })

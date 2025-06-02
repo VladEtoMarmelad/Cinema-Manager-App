@@ -1,17 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios'; 
 import { redirect } from 'next/navigation';
 import { URLSlice } from '@/URLSlice.mjs';
+import { z } from 'zod';
+import { filmCommentSchema } from '@/zod/filmCommentSchema';
+import axios from 'axios'; 
 
 const pathchFilmRating = async (movieId) => {
-
-    if (typeof movieId === "number") {
-        movieId = `http://127.0.0.1:8000/movies/${movieId}/`
-    }
-
-    let response = await axios.get("http://127.0.0.1:8000/comments/");
-    response = response.data;
-    const allFilmComments = response.filter(comment => comment.movieId === movieId);
+    const response = await axios.get("http://127.0.0.1:8000/comments/", {params: {
+        movieId: URLSlice(movieId, 29)
+    }});
+    const allFilmComments = response.data
     
     let rating = 0
     for (let i=0; i<allFilmComments.length; i+=1) {
@@ -29,9 +27,10 @@ const pathchFilmRating = async (movieId) => {
 export const fetchComments = createAsyncThunk("films/fetchComments", async (data) => {
     const {movieId, userId} = data 
 
-    let response = await axios.get("http://127.0.0.1:8000/comments/");
+    let response = await axios.get("http://127.0.0.1:8000/comments/", {params: {
+        movieId: movieId
+    }});
     response = response.data;
-    response = response.filter(comment => URLSlice(comment.movieId, 29) === movieId);
 
     for (let i=0; i<response.length; i+=1) {
         let user = await axios.get(response[i].userId)
@@ -53,8 +52,24 @@ export const fetchComments = createAsyncThunk("films/fetchComments", async (data
 })
 
 export const addComment = createAsyncThunk("films/addComment", async (commentData) => {
-    await axios.post("http://127.0.0.1:8000/comments/", commentData)
-    pathchFilmRating(commentData.movieId)
+    try {
+        await filmCommentSchema.parseAsync(commentData)
+
+        await axios.post("http://127.0.0.1:8000/comments/", commentData)
+        pathchFilmRating(commentData.movieId)
+    } catch (error) {
+        if (error instanceof z.ZodError) {
+            const validationErrors = []
+
+            for (let i=0; i<error.errors.length; i+=1) {
+                validationErrors.push(error.errors[i].message)
+            }
+
+            return validationErrors
+        } else {
+            console.error("Unexpected error:", error);
+        }
+    }
 })
 
 export const deleteComment = createAsyncThunk("films/deleteComment", async (commentData) => {
@@ -67,7 +82,8 @@ const filmCommentsSlice = createSlice({
     initialState: {
         comments: [],
         status: "idle",
-        error: null
+        error: null,
+        validationErrors: []
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -85,10 +101,12 @@ const filmCommentsSlice = createSlice({
             })
 
             .addCase(addComment.pending, (state) => {
-                state.status = 'loading';
+                state.validationErrors = [];
             })
-            .addCase(addComment.fulfilled, (state) => {
-                state.status = 'loading';
+            .addCase(addComment.fulfilled, (state, action) => {
+                if (action.payload) {
+                    state.validationErrors = action.payload
+                }
             })
             .addCase(addComment.rejected, (state, action) => {
                 state.status = 'failed';

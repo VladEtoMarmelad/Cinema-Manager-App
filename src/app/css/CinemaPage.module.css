@@ -1,0 +1,35 @@
+.ribbonContainer {
+    display: flex;
+    align-items: center;
+}
+
+.filmSessionsRibbon {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+    transition: all 0.5s;
+    position: relative;
+}
+
+.circleButton {
+    width: 50px;
+    height: 50px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 100%;
+    transition: all 0.5s;
+    z-index: 1;
+    background-color: #f2f2f2;
+}
+
+.circleButton:hover {
+    background-color: lightgray;
+}
+
+.left::before {
+    content: "<";
+}
+
+.right::before {
+    content: ">";
+}

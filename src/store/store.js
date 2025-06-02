@@ -5,6 +5,7 @@ import filmInteractReducer from '@/features/filmInteractSlice';
 import cinemaReducer from "@/features/cinemaSlice";
 import usersReducer from "@/features/usersSlice";
 import filmSessionReducer from "@/features/filmSessionSlice";
+import filmSessionInteractReducer from "@/features/filmSessionInteractSlice";
 import cinemaInteractReducer from "@/features/cinemaInteractSlice"
 
 export const store = configureStore({
@@ -15,6 +16,7 @@ export const store = configureStore({
         cinema: cinemaReducer,
         cinemaInteract: cinemaInteractReducer,
         users: usersReducer,
-        filmSessions: filmSessionReducer
+        filmSessions: filmSessionReducer,
+        filmSessionInteract: filmSessionInteractReducer
     }
 });
