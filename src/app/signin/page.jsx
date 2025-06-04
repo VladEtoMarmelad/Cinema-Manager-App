@@ -4,12 +4,11 @@ import Link from "next/link";
 import { SignInRedux } from "@/features/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { changeUserInfo } from "@/features/usersSlice";
+import { GoogleSignInButton } from "../components/GoogleSignInButton";
 
 const SignInPage = () => {
-    
     const userInfo = useSelector((state) => state.users.userInfo)
     const validationErrors = useSelector((state) => state.users.validationErrors)
-
     const dispatch = useDispatch();
 
     const changeUserInfoHandler = (field, value) => {
@@ -56,9 +55,21 @@ const SignInPage = () => {
                     <button type="submit" className="blackButton">Войти в аккаунт</button>
                 </span>
             </form>
+
+            <div className="centerContainer" style={{alignItems: 'center', color:'gray'}}>
+                <hr style={{display: 'inline-block', backgroundColor:'gray', width:'5%', height:'1px'}}/>
+                <p style={{display:'inline', padding:'15px'}}>или</p>
+                <hr style={{display: 'inline-block', backgroundColor:'gray', width:'5%', height:'1px'}}/>
+            </div>
+
+            <div className="centerContainer">
+                <GoogleSignInButton/>
+            </div>
+
             <span className="centerContainer">
                 <Link href="/register" className="grayButton">Нету аккаунта? Зарегестрируйтесь!</Link>
             </span>
+
         </div>
     )
 }

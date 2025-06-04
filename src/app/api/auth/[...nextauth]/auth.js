@@ -1,6 +1,7 @@
 import axios from "axios";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google"
 import { URLSlice } from "@/URLSlice.mjs"
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
@@ -24,6 +25,10 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                     return null
                 }
             }
+        }),
+        Google({
+            clientId: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET
         })
     ],
     callbacks: {
@@ -40,7 +45,14 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                 token.cinemaAdmin = user.cinemaAdmin;
             }
             return token;
-        }
+        },
+        async signIn({ account, profile }) {
+            if (account.provider === "google") {
+                // console.log("account: ", account)
+                // console.log("profile: ", profile)
+                return true
+            }
+        },
     },
     secret: process.env.NEXTAUTH_SECRET
 })
