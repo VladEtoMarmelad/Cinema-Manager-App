@@ -64,7 +64,7 @@ const styles = {
     }
 };
 
-const GoogleSignInButton = () => {
+const GoogleSignInButton = ({children}) => {
     return (
         <button
             style={styles.button}
@@ -88,7 +88,7 @@ const GoogleSignInButton = () => {
                         <path fill="none" d="M0 0h48v48H0z" />
                     </svg>
                 </div>
-                <span style={styles.contents}>Войти в аккаунт используя Google</span>
+                <span style={styles.contents}>{children}</span>
             </div>
         </button>
     )

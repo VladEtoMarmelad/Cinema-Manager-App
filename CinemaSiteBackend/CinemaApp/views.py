@@ -4,8 +4,12 @@ from django.shortcuts import render
 
 from django.shortcuts import render
 from rest_framework import viewsets
-from .models import UserModel, MovieModel, MovieCommentModel, CinemaModel, CinemaRoomModel, FilmSessionModel
-from .serializers import UserSerializer, MovieSerializer, MovieCommentSerializer, CinemaSerializer, CinemaRoomSerializer, FilmSessionSerializer
+from .models import (UserModel, MovieModel, MovieCommentModel,
+                     CinemaModel, CinemaRoomModel, FilmSessionModel,
+                     FilmTicketModel)
+from .serializers import (UserSerializer, MovieSerializer, MovieCommentSerializer,
+                          CinemaSerializer, CinemaRoomSerializer, FilmSessionSerializer,
+                          FilmTicketSerializer)
 
 # Create your views here.
 
@@ -16,9 +20,12 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = UserModel.objects.all()
         name = self.request.query_params.get("name")
+        email = self.request.query_params.get("email")
 
         if (name):
             queryset = queryset.filter(name=name)
+        if (email):
+            queryset = queryset.filter(email=email)
         return queryset
 
 class MovieViewSet(viewsets.ModelViewSet):
@@ -62,4 +69,15 @@ class FilmSessionViewSet(viewsets.ModelViewSet):
         cinemaId = self.request.query_params.get("cinemaId")
         if (cinemaId):
             queryset = queryset.filter(cinemaId=cinemaId)
+        return queryset
+
+class FilmTicketViewSet(viewsets.ModelViewSet):
+    queryset = FilmTicketModel.objects.all()
+    serializer_class = FilmTicketSerializer
+
+    def get_queryset(self):
+        queryset = FilmTicketModel.objects.all()
+        userId = self.request.query_params.get("userId")
+        if (userId):
+            queryset = queryset.filter(userId = userId)
         return queryset

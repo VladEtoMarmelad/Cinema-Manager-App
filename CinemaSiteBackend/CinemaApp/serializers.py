@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import UserModel, MovieModel, MovieCommentModel, CinemaModel, CinemaRoomModel, FilmSessionModel
+from .models import (UserModel, MovieModel, MovieCommentModel,
+                     CinemaModel, CinemaRoomModel, FilmSessionModel,
+                     FilmTicketModel)
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -7,6 +9,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = [
             "id",
             "name",
+            "email",
             "password",
             "admin",
             "cinemaAdmin"
@@ -70,4 +73,18 @@ class FilmSessionSerializer(serializers.HyperlinkedModelSerializer):
             "film",
             "sessionTime",
             "seats"
+        ]
+
+class FilmTicketSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = FilmTicketModel
+        fields = [
+            "id",
+            "userId",
+            "filmSessionId",
+
+            "seatType",
+            "seatNumber",
+            "seatRowIndex",
+            "seatIndex"
         ]

@@ -15,16 +15,24 @@ const NavBar = () => {
         <div className={styles.NavBar}>
             <Link href="/" >Главная <i className="bi bi-house-fill"/></Link>
 
-            {session.status === "authenticated" && !session.data.user.cinemaAdmin ?
+            {
+                session.status === "authenticated" &&
                 <section>
-                    <Link href="/cinema/add">Зарегестрировать кинотеатр <strong>+</strong></Link>
+                    <Link href="/tickets">
+                        Купленные билеты <i className="bi bi-ticket-fill"/>
+                    </Link>
+                    {!session.data.user.cinemaAdmin ?
+                        <section>
+                            <Link href="/cinema/add">Зарегестрировать кинотеатр <strong>+</strong></Link>
+                        </section>
+                    : 
+                        <section>
+                            <Link href={`/cinema/?id=${session.data.user.cinemaAdmin}`}>
+                                Ваш кинотеатр <i className="bi bi-building-fill-gear" style={{fontSize:'20px'}}/>
+                            </Link>
+                        </section>
+                    }
                 </section>
-                : session.status === "authenticated" &&
-                    <section>
-                        <Link href={`/cinema/?id=${session.data.user.cinemaAdmin}`}>
-                            Ваш кинотеатр <i className="bi bi-building-fill-gear" style={{fontSize:'20px'}}/>
-                        </Link>
-                    </section>
             }
 
             {session.status === "authenticated" &&

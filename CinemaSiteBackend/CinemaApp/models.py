@@ -10,7 +10,8 @@ class CinemaModel(models.Model):
 class UserModel(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=100)
-    password = models.CharField(default="12345", max_length=100)
+    email = models.EmailField(null=True)
+    password = models.CharField(null=True, max_length=100)
 
     admin = models.BooleanField(default=False)
 
@@ -66,7 +67,17 @@ class FilmSessionModel(models.Model):
    '''
    n - number of seat
    seats in seatsArrays can be Bn, Vn or On
-   B-Basis
+   B-Basic
    V-VIP
    O-Owned
    '''
+
+class FilmTicketModel(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    userId = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    filmSessionId = models.ForeignKey(FilmSessionModel, on_delete=models.CASCADE)
+
+    seatType = models.CharField(max_length=1)
+    seatNumber = models.PositiveIntegerField(null=True)
+    seatRowIndex = models.PositiveIntegerField()
+    seatIndex = models.PositiveIntegerField()

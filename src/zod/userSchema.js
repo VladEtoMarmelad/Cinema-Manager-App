@@ -13,6 +13,7 @@ const userSchema = z.object({
             })
         }
     }),
+    email: z.string().email("Поле должно содержать email"),
     password: z.string().min(8, "Длина пароля должна быть как минимум 8 символов"), 
     repeatPassword: z.string()
 }).superRefine((values, ctx) => {

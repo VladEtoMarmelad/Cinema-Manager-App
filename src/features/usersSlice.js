@@ -1,29 +1,31 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { SignIn } from "@/sign-in";
 import { userSchema } from '@/zod/userSchema';
 import { signInSchema } from '@/zod/signInSchema';
 import { catchValidationErrors } from '@/zod/catchValidationErrors';
+import axios from 'axios';
 
 export const addUser = createAsyncThunk("users/addUser", async (userData) => {
-    const {name, password, repeatPassword} = userData
+    const {name, email, password, repeatPassword} = userData
 
     try {
         await userSchema.parseAsync({
             name: name,
+            email: email,
             password: password, 
             repeatPassword: repeatPassword
         });
 
         await axios.post("http://127.0.0.1:8000/users/", {
             name: name,
+            email: email,
             password: password,
             admin: false
         })
-        SignIn({name, password})
+        SignIn({name, email, password})
 
     } catch (error) {
-        catchValidationErrors(error)
+        return catchValidationErrors(error)
     }
 })
 
@@ -39,17 +41,17 @@ export const SignInRedux = createAsyncThunk("users/signIn", async (userData) => 
         SignIn({name, password})
 
     } catch (error) {
-        catchValidationErrors(error)
+        return catchValidationErrors(error)
     }
     
 })
-
 
 const usersSlice = createSlice({
     name: "users",
     initialState: {
         userInfo: {
             name: "",
+            email: "",
             password: "",
             repeatPassword: ""
         },

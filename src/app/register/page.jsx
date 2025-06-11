@@ -3,6 +3,7 @@
 import { useSelector, useDispatch } from "react-redux"
 import { changeUserInfo } from "@/features/usersSlice"
 import { addUser } from "@/features/usersSlice"
+import { GoogleSignInButton } from "../components/GoogleSignInButton"
 import Link from "next/link";
 
 const Register = () => {
@@ -20,6 +21,7 @@ const Register = () => {
         e.preventDefault();
         dispatch(addUser({
             name: userInfo.name,
+            email: userInfo.email,
             password: userInfo.password,
             repeatPassword: userInfo.repeatPassword
         }))
@@ -28,15 +30,11 @@ const Register = () => {
     return (
         <div style={{position:'relative', top:'15px'}}>
 
-            {validationErrors.length > 0 && 
-                <section className="errorSection">
-                    <ol>
-                        {
-                            validationErrors.map((message, index) => 
-                                <li key={index}>{index+1}. {message}</li>
-                            )
-                        }
-                    </ol>
+            {validationErrors.length > 0 &&
+                <section className="errorSection" style={{marginBottom: '15px'}}>
+                    {validationErrors.map((error, index) => 
+                        <li key={index}>{error}</li>
+                    )}
                 </section>
             }
 
@@ -46,6 +44,13 @@ const Register = () => {
                     value={userInfo.name}
                     onChange={(e) => changeUserInfoHandler("name", e.target.value)}
                     placeholder="Имя пользователя..."
+                />
+
+                <input 
+                    type="email"
+                    value={userInfo.email}
+                    onChange={(e) => changeUserInfoHandler("email", e.target.value)}
+                    placeholder="Email пользователя..."
                 />
 
                 <input 
@@ -66,6 +71,17 @@ const Register = () => {
                     <button type="submit" className="blackButton">Зарегестрироваться</button>
                 </span>
             </form>
+
+            <div className="centerContainer" style={{alignItems: 'center', color:'gray'}}>
+                <hr style={{display: 'inline-block', backgroundColor:'gray', width:'5%', height:'1px'}}/>
+                <p style={{display:'inline', padding:'15px'}}>или</p>
+                <hr style={{display: 'inline-block', backgroundColor:'gray', width:'5%', height:'1px'}}/>
+            </div>
+
+            <div className="centerContainer">
+                <GoogleSignInButton>Зарегестрироваться используя Google</GoogleSignInButton>
+            </div>
+
             <span className="centerContainer">
                 <Link href="signin" className="grayButton">Уже есть аккаунт? Войти...</Link>
             </span>

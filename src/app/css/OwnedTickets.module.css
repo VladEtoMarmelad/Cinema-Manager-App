@@ -1,0 +1,31 @@
+.generalDiv {
+    position: relative;
+    top: 50px
+}
+
+.ticketsSection {
+    display: grid;
+    grid-template-columns: repeat(3, auto) ;
+    gap: 25px;
+}
+
+.ticketAndControlDiv {
+    display: flex;
+    flex-direction: row;
+}
+
+.alertDiv {
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0, 0.4); 
+    color: white;
+    font-weight: bold;
+    border: 3px solid #f1f1f1;
+    position: absolute;
+    top: 50%;
+    left: 40%; 
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    width: 80%;
+    padding: 20px;
+    text-align: center;
+}

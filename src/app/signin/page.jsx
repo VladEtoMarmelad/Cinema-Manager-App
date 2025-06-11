@@ -5,6 +5,7 @@ import { SignInRedux } from "@/features/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { changeUserInfo } from "@/features/usersSlice";
 import { GoogleSignInButton } from "../components/GoogleSignInButton";
+import { useSession } from "next-auth/react";
 
 const SignInPage = () => {
     const userInfo = useSelector((state) => state.users.userInfo)
@@ -22,6 +23,9 @@ const SignInPage = () => {
             password: userInfo.password
         }))
     }
+
+    const session = useSession();
+    console.log(session)
 
     return (
         <div style={{position:'relative', top:'15px'}}>
@@ -63,7 +67,7 @@ const SignInPage = () => {
             </div>
 
             <div className="centerContainer">
-                <GoogleSignInButton/>
+                <GoogleSignInButton>Войти в аккаунт используя Google</GoogleSignInButton>
             </div>
 
             <span className="centerContainer">

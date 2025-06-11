@@ -24,12 +24,12 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendFilmTicketMail = async (messageData) => {
-    const {subject, mainInfo, seat, row, time} = messageData
+    const {recipientEmail, subject, mainInfo, seat, row, time} = messageData
     
     await transporter.sendMail({
-        from: '"CinemaPetproject" <cinemapetproject@gmail.com>',
-        to: "tomifa7058@ofular.com", //<--10 minutes mail
+        from: '"CinemaPetProject" <cinemapetproject@gmail.com>',
+        to: recipientEmail,
         subject: subject,
-        html: TicketEmail({mainInfo, seat, row, time}), // HTML body
+        html: TicketEmail({mainInfo, seat, row, time})
     });
 };

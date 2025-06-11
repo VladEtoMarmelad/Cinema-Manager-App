@@ -54,14 +54,14 @@ const FilmSession = () => {
                                         
                                 seat.includes("B") &&
                                     <button
-                                        onClick={() => changeSeatsHandler(seat, seatRow.indexOf(seat), filmSession.seats.seats.indexOf(seatRow))}
+                                        onClick={() => changeSeatsHandler(seatRow.indexOf(seat), filmSession.seats.seats.indexOf(seatRow))}
                                         className={`${styles.seat} ${styles.basic}`}
                                     />
                                 ||
 
                                 seat.includes("V") && 
                                     <button
-                                        onClick={() => changeSeatsHandler(seat, seatRow.indexOf(seat), filmSession.seats.seats.indexOf(seatRow))}
+                                        onClick={() => changeSeatsHandler(seatRow.indexOf(seat), filmSession.seats.seats.indexOf(seatRow))}
                                         className={`${styles.seat} ${styles.VIP}`}
                                     />
                                 ||

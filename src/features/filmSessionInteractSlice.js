@@ -5,10 +5,9 @@ import { fromDBTimeFormat } from '@/dateConverter';
 import axios from 'axios';
 
 export const rentCinemaSeat = createAsyncThunk("filmSession/rentSeat", async (data) => {
-    const session = await getSession() ? true : false
-
-    if (session) {
-        
+    const session = await getSession()
+    console.log(session)
+    if (session ? true : false) {
         const {prevSeats, rowIndex, seatIndex, filmSessionId} = data
 
         let filmSession = await axios.get(`http://127.0.0.1:8000/filmSessions/${filmSessionId}/`)
@@ -20,6 +19,7 @@ export const rentCinemaSeat = createAsyncThunk("filmSession/rentSeat", async (da
         film = film.data
 
         sendFilmTicketMail({
+            recipientEmail: session.user.email,
             subject: `Билет на фильм "${film.name}"`,
             mainInfo: `Вы купили место на фильм "${film.name}"`,
             seat: prevSeats.seats[rowIndex][seatIndex],
@@ -30,6 +30,7 @@ export const rentCinemaSeat = createAsyncThunk("filmSession/rentSeat", async (da
         let newSeats = prevSeats.seats.map(row => [...row]);
 
         const prevSeatNumber = Number( newSeats[rowIndex][seatIndex].slice(1) )
+        const prevSeatType = newSeats[rowIndex][seatIndex].slice(0, -String(prevSeatNumber).length)
 
         newSeats[rowIndex][seatIndex] = `O${prevSeatNumber}`
 
@@ -38,6 +39,14 @@ export const rentCinemaSeat = createAsyncThunk("filmSession/rentSeat", async (da
         }
         
         await axios.patch(`http://127.0.0.1:8000/filmSessions/${filmSessionId}/`, {seats})
+        axios.post("http://127.0.0.1:8000/filmTickets/", {
+            userId: `http://127.0.0.1:8000/users/${session.user.id}/`,
+            filmSessionId: `http://127.0.0.1:8000/filmSessions/${filmSessionId}/`,
+            seatType: prevSeatType,
+            seatNumber: prevSeatNumber,
+            seatRowIndex: rowIndex,
+            seatIndex: seatIndex
+        })
     }
 })
 
