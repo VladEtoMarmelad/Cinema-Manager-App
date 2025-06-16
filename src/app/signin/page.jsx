@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { changeUserInfo } from "@/features/usersSlice";
 import { GoogleSignInButton } from "../components/GoogleSignInButton";
 import { useSession } from "next-auth/react";
+import styles from "@/app/css/Auth.module.css"
 
 const SignInPage = () => {
     const userInfo = useSelector((state) => state.users.userInfo)
@@ -28,7 +29,7 @@ const SignInPage = () => {
     console.log(session)
 
     return (
-        <div style={{position:'relative', top:'15px'}}>
+        <div className={`centerContainer ${styles.generalDiv}`}>
 
             {validationErrors.length > 0 && 
                 <section className="errorSection">

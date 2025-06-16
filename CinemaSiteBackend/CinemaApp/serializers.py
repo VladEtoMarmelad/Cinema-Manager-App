@@ -71,6 +71,7 @@ class FilmSessionSerializer(serializers.HyperlinkedModelSerializer):
             "cinemaId",
             "roomId",
             "film",
+
             "sessionTime",
             "seats"
         ]

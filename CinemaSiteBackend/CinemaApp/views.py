@@ -32,6 +32,31 @@ class MovieViewSet(viewsets.ModelViewSet):
     queryset = MovieModel.objects.all()
     serializer_class = MovieSerializer
 
+    def get_queryset(self):
+        queryset = MovieModel.objects.all()
+        name = self.request.query_params.get("name")
+        queryset_length = self.request.query_params.get("amount")
+
+        def isInclude(value):
+            value = vars(value)["name"].lower()
+            index = value.find(name)
+
+            if (index != -1):
+                return True
+            else:
+                return False
+
+        if (queryset_length):
+            if (name != "false"): #поиск по названию
+                name = name.lower()
+                queryset = filter(isInclude, queryset)
+                queryset = list(queryset)
+                queryset = queryset[:int(queryset_length)]
+            else: #поиск последних queryset_length фильмов
+                queryset = queryset.order_by("-id")
+                queryset = queryset[:int(queryset_length)]
+        return queryset
+
 class MovieCommentViewSet(viewsets.ModelViewSet):
     queryset = MovieCommentModel.objects.all()
     serializer_class = MovieCommentSerializer
@@ -67,8 +92,12 @@ class FilmSessionViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = FilmSessionModel.objects.all()
         cinemaId = self.request.query_params.get("cinemaId")
+        filmId = self.request.query_params.get("filmId")
+
         if (cinemaId):
             queryset = queryset.filter(cinemaId=cinemaId)
+        if (filmId):
+            queryset = queryset.filter(film=filmId)
         return queryset
 
 class FilmTicketViewSet(viewsets.ModelViewSet):

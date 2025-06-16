@@ -54,9 +54,11 @@ const AddRoom = () => {
     }
 
     return (
-        <section>
-            <h2>Добавление комнаты</h2>
-            <form onSubmit={addCinemaRoomHandler}>
+        <section className={styles.addSection}>
+            <div className={styles.addSectionName}>
+                <h2>Добавление комнаты</h2>
+            </div>
+            <form onSubmit={addCinemaRoomHandler} className={styles.addSectionForm}>
                 {
                     rows.defaultSeats.map((row, index) => 
                         <div key={index}>
@@ -109,14 +111,16 @@ const AddRoom = () => {
                 >
                     Добавить комнату
                 </button>
+
+                {validationErrors.length > 0 && 
+                    <section className="errorSection" style={{marginTop:'25px'}}>
+                        {validationErrors.map((validationError, index) => 
+                            <li key={index}>{validationError}</li>
+                        )}
+                    </section>
+                }
+
             </form>
-            {validationErrors.length > 0 && 
-                <section className="errorSection" style={{marginTop:'25px'}}>
-                    {validationErrors.map((validationError, index) => 
-                        <li key={index}>{validationError}</li>
-                    )}
-                </section>
-            }
         </section>
     )
 }

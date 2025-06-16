@@ -1,0 +1,11 @@
+.generalDiv {
+    margin: 0 0 0 12.5em;
+    flex-direction: column
+}
+
+.generalDiv form {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-around;
+}

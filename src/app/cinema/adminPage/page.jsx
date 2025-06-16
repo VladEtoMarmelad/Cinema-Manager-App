@@ -18,9 +18,8 @@ const CinemaAdminPage = () => {
     if (session.status === "authenticated" && session.data.user.cinemaAdmin !== cinemaId) return <h2>Вы не являетесь админом этого кинотеатра</h2>
 
     return (
-        <div className={styles.container}>
+        <div className={styles.container} style={{marginLeft:'-4.5em'}}>
             <AddRoom />
-            <hr style={{margin:'50px 0 50px 0', width:'75%'}}/>
             <AddFilmSession />
         </div>
     )

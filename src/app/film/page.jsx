@@ -2,7 +2,7 @@
 
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { fetchFilms } from "@/features/filmsSlice";
+import { getSingleFilm } from "@/features/filmsSlice";
 import { useSearchParams } from "next/navigation";
 import { FilmInfo } from "../components/FilmInfo";
 import Link from "next/link";
@@ -18,10 +18,10 @@ const SingleFilm = () => {
 
     const [film, setFilm] = useState(null);
 
+    console.log(films)
+
     useEffect(() => {
-        if (status === "idle") {
-            dispatch(fetchFilms())
-        }
+        dispatch(getSingleFilm(filmId))
     }, [])
 
     useEffect(() => {
@@ -42,17 +42,18 @@ const SingleFilm = () => {
                 showPoster={true}
             />
 
-            <section id={styles.timeTable}>
-                <h3>Расписание сеансов</h3><br/>
-                {film.timeTable.map((time, index) => 
-                        <Link 
-                            key={index} 
-                            href={`/cinema/filmSession?id=${time.id}`}
-                        >
-                            {time.sessionTime}
-                        </Link>
-                )}
-            </section>
+            <span style={{justifyContent: 'end'}}>
+                <section id={styles.timeTable}>
+                    <h3>Расписание сеансов</h3>
+                    {film.timeTable.map((time, index) => 
+                        <div key={index}>
+                            <Link href={`/cinema/filmSession?id=${time.id}`}>
+                                {time.sessionTime}
+                            </Link>
+                        </div>
+                    )}
+                </section>
+            </span>
         </div>
     )
 }

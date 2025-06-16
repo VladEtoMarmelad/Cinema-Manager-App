@@ -77,7 +77,7 @@ select:open::picker-icon {
 
 .blackButton {
   padding: 7.5px 5px 7.5px 5px;
-  border-radius: 15px;
+  border-radius: 10px;
   color: white;
   background-color: #1e1e1e;
   transition: all 0.5s;

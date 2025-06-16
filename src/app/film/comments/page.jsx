@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { fetchComments } from "@/features/filmCommentsSlice";
-import { fetchFilms } from "@/features/filmsSlice";
+import { getSingleFilm } from "@/features/filmsSlice";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AddFilmComment } from "@/app/components/AddFilmComment";
@@ -41,7 +41,7 @@ const FilmComments = () => {
             }))
 
             if (status === "idle") {
-                dispatch(fetchFilms())
+                dispatch(getSingleFilm(filmId))
             }
         }
     }, [filmId, session])

@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { redirect } from 'next/navigation';
 import { URLSlice } from '@/URLSlice.mjs';
-import { z } from 'zod';
 import { filmCommentSchema } from '@/zod/filmCommentSchema';
+import { catchValidationErrors } from '@/zod/catchValidationErrors';
 import axios from 'axios'; 
 
 const pathchFilmRating = async (movieId) => {
@@ -58,17 +58,7 @@ export const addComment = createAsyncThunk("films/addComment", async (commentDat
         await axios.post("http://127.0.0.1:8000/comments/", commentData)
         pathchFilmRating(commentData.movieId)
     } catch (error) {
-        if (error instanceof z.ZodError) {
-            const validationErrors = []
-
-            for (let i=0; i<error.errors.length; i+=1) {
-                validationErrors.push(error.errors[i].message)
-            }
-
-            return validationErrors
-        } else {
-            console.error("Unexpected error:", error);
-        }
+        return catchValidationErrors(error)
     }
 })
 

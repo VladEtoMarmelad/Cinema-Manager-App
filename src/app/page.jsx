@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-
-import { fetchFilms } from "@/features/filmsSlice";
+import { getSomeFilms } from "@/features/filmsSlice";
 import Link from "next/link";
 
 import styles from "@/app/css/MainPage.module.css";
@@ -11,22 +10,26 @@ const MainPage = () => {
 
     const films = useSelector((state) => state.films.films);
     const status = useSelector((state) => state.films.status);
+    const error = useSelector((state) => state.films.error);
+    const lastFilmsLoadStatusGlobalState = useSelector(state => state.films.lastFilmsLoadStatus)
+    let lastFilmsLoadStatus = false
     const [lastFilm, setLastFilm] = useState(null);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (status === 'idle') {
-            dispatch(fetchFilms());
+        if (lastFilmsLoadStatus === false && lastFilmsLoadStatusGlobalState === false) {
+            dispatch(getSomeFilms(3))
         }
-    }, [status, dispatch]);
+        lastFilmsLoadStatus = true
+    }, [lastFilmsLoadStatus])
 
     useEffect(() => {
-        setLastFilm(films[films.length - 1])
+        setLastFilm(films[0]) // с backend-а возвращается уже перевёрнутый список последних фильмов поэтому - 0
     }, [films])
 
     if (status === 'loading') return <p>Загрузка...</p>;
-    if (status === 'failed') return <p>Ошибка загрузки</p>;
+    if (status === 'failed') return <p>Ошибка загрузки {error}</p>;
 
     return (
         <div >

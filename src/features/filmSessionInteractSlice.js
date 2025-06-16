@@ -51,11 +51,12 @@ export const rentCinemaSeat = createAsyncThunk("filmSession/rentSeat", async (da
 })
 
 export const addFilmSession = createAsyncThunk("filmSession/add", async (filmSessionData) => {
-    const { roomId, film, sessionTime } = filmSessionData
+    const { cinemaId, roomId, film, sessionTime } = filmSessionData
     const room = await axios.get(roomId)
     const seats = room.data.defaultSeats
 
     axios.post("http://127.0.0.1:8000/filmSessions/", {
+        cinemaId,
         roomId,
         film,
         sessionTime,

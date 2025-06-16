@@ -3,11 +3,6 @@
     flex-direction: column;
 }
 
-.container section {
-    width: 75%;
-    padding: 15px;
-}
-
 .addSeat {
     width: 30px;
     height: 30px;
@@ -39,13 +34,53 @@
 .span[data-descr]:hover::after {
     content: attr(data-descr);
     position: absolute;
-    left: 0;
+    right: 0px;
     top: 30px;
-    min-width: 175px;
+    min-width: 150px;
     border: 1px #aaaaaa solid;
     border-radius: 10px;
     background-color: white;
     padding: 5px;
     font-size: 14px;
     z-index: 1;
+}
+
+.addSection {
+    background-color: white;
+    margin: 25px;
+    border: 1.5px solid rgba(48, 48, 48, 0.5);
+}
+
+.addSectionName {
+    padding: 25px;
+    width: 100%;
+    border-bottom: 1.5px solid rgba(48, 48, 48, 0.5);
+}
+
+.addSectionForm {
+    padding: 25px;
+}
+
+.addFilmSessionFormInputs {
+    display: flex;
+    flex-direction: row;
+}
+
+.addFilmSessionFormInputs div {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+.filmInputButton {
+    width: 75%;
+    border: 1px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 5px;
+    transition: 0.5s all;
+}
+
+.filmInputButton:hover {
+    background-color: rgba(48, 48, 48, 0.25);
 }

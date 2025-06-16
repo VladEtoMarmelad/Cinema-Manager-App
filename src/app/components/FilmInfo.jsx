@@ -24,13 +24,11 @@ const FilmInfo = (props) => {
     return (
         <>
             {showPoster &&
-                <section id={styles.posterSection}>
-                    <img 
-                        src={filmInfoPoster && filmInfoPoster || filmInfo.poster} 
-                        alt="filmPoster" 
-                        style={{borderRadius:'15px', width: '200px', height:'300px'}}
-                    />
-                </section>
+                <img 
+                    src={filmInfoPoster && filmInfoPoster || filmInfo.poster} 
+                    alt="filmPoster" 
+                    id={styles.poster}
+                />
             }
 
             <section id={styles.infoSection}>

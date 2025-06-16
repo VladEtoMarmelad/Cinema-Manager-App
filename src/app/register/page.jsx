@@ -5,6 +5,7 @@ import { changeUserInfo } from "@/features/usersSlice"
 import { addUser } from "@/features/usersSlice"
 import { GoogleSignInButton } from "../components/GoogleSignInButton"
 import Link from "next/link";
+import styles from "@/app/css/Auth.module.css"
 
 const Register = () => {
     
@@ -28,8 +29,7 @@ const Register = () => {
     }
 
     return (
-        <div style={{position:'relative', top:'15px'}}>
-
+        <div className={`centerContainer ${styles.generalDiv}`}>
             {validationErrors.length > 0 &&
                 <section className="errorSection" style={{marginBottom: '15px'}}>
                     {validationErrors.map((error, index) => 
@@ -65,7 +65,7 @@ const Register = () => {
                     value={userInfo.repeatPassword}
                     onChange={(e) => changeUserInfoHandler("repeatPassword", e.target.value)}
                     placeholder="Повторите пароль..."
-                /><br/>
+                />
 
                 <span className="centerContainer">
                     <button type="submit" className="blackButton">Зарегестрироваться</button>
