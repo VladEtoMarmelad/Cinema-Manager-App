@@ -58,6 +58,16 @@ const FilmComments = () => {
         }
     }, [comments, session])
 
+    const deleteCommentHandler = async ({commentId, movieId}) => {
+        await dispatch(
+            deleteComment({
+                commentId, 
+                movieId
+            })
+        ).unwrap()
+        window.location.reload()
+    }
+
     if (status === "loading" || filmsStatus === "loading" || session.status === "loading") return <p>Загрузка...</p>
     if (status === "failed") return <p>Ошибка загрузки комментариев</p>
 
@@ -93,12 +103,10 @@ const FilmComments = () => {
                                         onClick={
                                             (e) => {
                                                 e.preventDefault();
-                                                dispatch(
-                                                    deleteComment({
-                                                        commentId: comment.id, 
-                                                        movieId: film.id
-                                                    })
-                                                )
+                                                deleteCommentHandler({
+                                                    commentId: comment.id, 
+                                                    movieId: comment.movieId
+                                                })
                                             }
                                         }
                                     >
@@ -106,7 +114,6 @@ const FilmComments = () => {
                                     </button>
                                 </span>
                             }
-
                         </div>
                     )}
                 </section> : <h3>К этому фильму нету коментариев...</h3>

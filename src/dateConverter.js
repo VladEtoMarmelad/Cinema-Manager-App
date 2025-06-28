@@ -23,11 +23,22 @@ const replaceWith = [
     {from: "/12/", to: " Декабря "},
 ]
 
-export const fromDBTimeFormat = (time) => {
+export const fromDBTimeFormat = (time) => { //time - DateTimeField
     let date = parse(time, `yyyy-MM-dd'T'HH:mm:ss'Z'`, new Date())
     date = format(date, "eeeeee d/LL/ HH:mm")
 
     for (let i=0; i<replaceWith.length; i+=1) {
+        date = date.replaceAll(replaceWith[i].from, replaceWith[i].to)
+    }
+
+    return date
+}
+
+export const fromDBTimeFormatDateOnly = (time) => { //time - DateField
+    let date = parse(time, `yyyy-MM-dd`, new Date())
+    date = format(date, "eeeeee d/LL/yyyy год")
+
+    for (let i=0; i<replaceWith.length; i+=1) { 
         date = date.replaceAll(replaceWith[i].from, replaceWith[i].to)
     }
 

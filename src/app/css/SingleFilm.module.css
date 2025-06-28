@@ -21,9 +21,8 @@
 }
 
 #poster {
-    width: 200px;
-    min-width: 100px;
-    height: auto; 
+    height: 300px;
+    width: auto;
     border-radius: 15px;
 }
 

@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { redirect } from 'next/navigation';
 import { URLSlice } from '@/URLSlice.mjs';
 import { filmCommentSchema } from '@/zod/filmCommentSchema';
 import { catchValidationErrors } from '@/zod/catchValidationErrors';
@@ -21,7 +20,6 @@ const pathchFilmRating = async (movieId) => {
     rating = Math.trunc(rating)
 
     axios.patch(movieId, {rating})
-    redirect("/")
 }
 
 export const fetchComments = createAsyncThunk("films/fetchComments", async (data) => {

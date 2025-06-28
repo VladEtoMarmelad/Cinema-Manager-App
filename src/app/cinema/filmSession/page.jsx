@@ -37,43 +37,61 @@ const FilmSession = () => {
     }
 
     return (
-        <div style={{width:'75%', margin:'auto'}}>
-            <div style={{display:'flex', flexDirection:'column', justifyItems:'space-around'}}>
-                <div style={{display:'flex', gap:'15px', margin:'15px'}}>
-                    <FilmInfo filmInfo={filmSession.film} showPoster={true}/>
-                </div>
-            <div/>
-
+        <div style={{width:'80%', margin:'auto', display:'flex', flexDirection:'row', gap:'25px'}}>
             <section>
-                {filmSession.seats.seats && filmSession.seats.seats.length > 0 && filmSession.seats.seats.map((seatRow) =>
-                    seatRow.map((seat, index) => 
-                        <div key={index} style={{display:'inline'}}>
-                            {seat === "E" &&
-                                <div className={`${styles.seat} ${styles.empty}`}/>
-                                ||
-                                        
-                                seat.includes("B") &&
-                                    <button
-                                        onClick={() => changeSeatsHandler(seatRow.indexOf(seat), filmSession.seats.seats.indexOf(seatRow))}
-                                        className={`${styles.seat} ${styles.basic}`}
-                                    />
-                                ||
+                <div style={{display:'flex', flexDirection:'column', justifyItems:'space-around'}}>
+                    <div style={{display:'flex', gap:'15px', margin:'15px'}}>
+                        <FilmInfo filmInfo={filmSession.film} showPoster={true}/>
+                    </div>
+                </div>
 
-                                seat.includes("V") && 
-                                    <button
-                                        onClick={() => changeSeatsHandler(seatRow.indexOf(seat), filmSession.seats.seats.indexOf(seatRow))}
-                                        className={`${styles.seat} ${styles.VIP}`}
-                                    />
-                                ||
+                <section>
+                    {filmSession.seats.seats && filmSession.seats.seats.length > 0 && filmSession.seats.seats.map((seatRow) =>
+                        seatRow.map((seat, index) => 
+                            <div key={index} style={{display:'inline'}}>
+                                {seat === "E" &&
+                                    <div className={`${styles.seat} ${styles.empty}`}/>
+                                    ||
+                                            
+                                    seat.includes("B") &&
+                                        <button
+                                            onClick={() => changeSeatsHandler(seatRow.indexOf(seat), filmSession.seats.seats.indexOf(seatRow))}
+                                            className={`${styles.seat} ${styles.basic}`}
+                                        />
+                                    ||
 
-                                seat.includes("O") && <div className={`${styles.seat} ${styles.owned}`}/> 
-                            }
-                            {index+1 === seatRow.length && <br/>}
-                        </div>     
-                    )   
-                )}
+                                    seat.includes("V") && 
+                                        <button
+                                            onClick={() => changeSeatsHandler(seatRow.indexOf(seat), filmSession.seats.seats.indexOf(seatRow))}
+                                            className={`${styles.seat} ${styles.VIP}`}
+                                        />
+                                    ||
+
+                                    seat.includes("O") && <div className={`${styles.seat} ${styles.owned}`}/> 
+                                }
+                                {index+1 === seatRow.length && <br/>}
+                            </div>     
+                        )   
+                    )}
+                </section>
             </section>
-            </div>
+
+            <section className={styles.filmSessionInfoSection}>
+                <span>
+                    <h3>Кинотеатр: </h3>
+                    <Link href={`/cinema?id=${filmSession.cinema.id}`}>{filmSession.cinema.name}</Link>
+                </span>
+
+                <span>
+                    <h3>ID комнаты: </h3>
+                    <p>{filmSession.roomId}</p>
+                </span>
+
+                <span>
+                    <h3>Время сеанса: </h3>
+                    <time>{filmSession.sessionTime}</time>
+                </span>
+            </section>
         </div>
     )
 }

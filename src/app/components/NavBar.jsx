@@ -3,18 +3,20 @@
 import Link from "next/link";
 import styles from "@/app/css/NavBar.module.css"
 import { useSession } from "next-auth/react";
-import { SignOut } from "@/sign-out";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const NavBar = () => {
     
     const session = useSession();
+    const router = useRouter()
 
     if (session.status === "loading") return <h5>Загрузка...</h5>
 
     return (
         <div className={styles.NavBar}>
             <Link href="/" >Главная <i className="bi bi-house-fill"/></Link>
-
+            <Link href="/search">Поиск <i className="bi bi-search"/></Link>
             {
                 session.status === "authenticated" &&
                 <section>
@@ -22,15 +24,11 @@ const NavBar = () => {
                         Купленные билеты <i className="bi bi-ticket-fill"/>
                     </Link>
                     {!session.data.user.cinemaAdmin ?
-                        <section>
-                            <Link href="/cinema/add">Зарегестрировать кинотеатр <strong>+</strong></Link>
-                        </section>
+                        <Link href="/cinema/add">Зарегестрировать кинотеатр <strong>+</strong></Link>
                     : 
-                        <section>
-                            <Link href={`/cinema/?id=${session.data.user.cinemaAdmin}`}>
-                                Ваш кинотеатр <i className="bi bi-building-fill-gear" style={{fontSize:'20px'}}/>
-                            </Link>
-                        </section>
+                        <Link href={`/cinema/?id=${session.data.user.cinemaAdmin}`}>
+                            Ваш кинотеатр <i className="bi bi-building-fill-gear" style={{fontSize:'20px'}}/>
+                        </Link>
                     }
                 </section>
             }
@@ -46,7 +44,7 @@ const NavBar = () => {
                     </section>
             }
 
-            <hr style={{marginTop: session.status === "unauthenticated" && "70vh" || "62.5vh"}}/>
+            <hr style={{marginTop: session.status === "unauthenticated" ? "37.5em" : "30em"}}/>
 
             <div name="authorizationSection">
                 {session.status === "authenticated" && 
@@ -54,7 +52,10 @@ const NavBar = () => {
                         <h2>{session.data.user.name}</h2>
 
                         <button 
-                            onClick={() => SignOut()} 
+                            onClick={() => {
+                                signOut();
+                                router.refresh()
+                            }}
                             className="blackButton" 
                             style={{width:'75%'}}
                         >

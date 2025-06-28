@@ -6,10 +6,11 @@ export const fetchSingleFilmSession = createAsyncThunk("filmSession/get", async 
     let filmSession = await axios.get(`http://127.0.0.1:8000/filmSessions/${filmSessionId}/`)
     filmSession = filmSession.data
 
-    let film = await axios.get(filmSession.film)
-    film = film.data
+    const film = await axios.get(filmSession.film)
+    const cinema = await axios.get(filmSession.cinemaId)
 
-    filmSession.film = film
+    filmSession.film = film.data
+    filmSession.cinema = cinema.data
     filmSession.sessionTime = fromDBTimeFormat(filmSession.sessionTime)
     
     return filmSession

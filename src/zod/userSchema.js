@@ -3,10 +3,13 @@ import axios from "axios";
 
 const userSchema = z.object({
     name: z.string().min(1, "Имя пользователя не должно быть пустой строкой").superRefine(async (name, ctx) => {
-        let allUsers = await axios.get("http://127.0.0.1:8000/users/")
-        allUsers = allUsers.data
 
-        if (allUsers.find(user => user.name === name)) {
+        const userWithSameName = await axios.get("http://127.0.0.1:8000/users/", {
+            params: {name}
+        })
+        const userExists = userWithSameName.data.length > 0 ? true : false 
+
+        if (userExists) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 message: "Пользователь с таким именем уже существует"
@@ -23,6 +26,14 @@ const userSchema = z.object({
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "Пароли должны совпадать"
+        })
+    }
+
+    const notAllowedPasswords = ["null", "undefinded"] 
+    if (notAllowedPasswords.includes(password)) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Пароли 'null' и 'undefinded' - запрещены"
         })
     }
 })

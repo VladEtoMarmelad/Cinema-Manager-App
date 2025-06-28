@@ -40,6 +40,7 @@ const SingleFilm = () => {
                 showCommentsLink={true} 
                 showSimilar={true} 
                 showPoster={true}
+                showRating={true}
             />
 
             <span style={{justifyContent: 'end'}}>

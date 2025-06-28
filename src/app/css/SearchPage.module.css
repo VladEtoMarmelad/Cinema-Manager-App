@@ -1,0 +1,40 @@
+.globalDiv {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    top: 25px;
+}
+
+.searchInput {
+    width: 68.5vw;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.searchInput:focus {
+    outline: none;
+    border: 1px solid black;
+}
+
+.displaySection {
+    display: grid;
+    grid-template-columns: repeat(4, auto) ;
+    gap: 25px;
+    margin-top: 25px;
+    margin-left: 5em;
+}
+
+.displaySection img {
+    border-radius: 15px;
+}
+
+.filterSection {
+    display: flex;
+    align-items: start;
+    position: sticky;
+    top: 25px;
+    min-width: 150px;
+    height: fit-content;
+    padding: 10px;
+}

@@ -6,10 +6,10 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from .models import (UserModel, MovieModel, MovieCommentModel,
                      CinemaModel, CinemaRoomModel, FilmSessionModel,
-                     FilmTicketModel)
+                     FilmTicketModel, CinemaComingSoonModel)
 from .serializers import (UserSerializer, MovieSerializer, MovieCommentSerializer,
                           CinemaSerializer, CinemaRoomSerializer, FilmSessionSerializer,
-                          FilmTicketSerializer)
+                          FilmTicketSerializer, CinemaComingSoonSerializer)
 
 # Create your views here.
 
@@ -21,8 +21,11 @@ class UserViewSet(viewsets.ModelViewSet):
         queryset = UserModel.objects.all()
         name = self.request.query_params.get("name")
         email = self.request.query_params.get("email")
+        password = self.request.query_params.get("password")
 
-        if (name):
+        if (name and password):
+            queryset = queryset.filter(name=name, password=password)
+        elif (name):
             queryset = queryset.filter(name=name)
         if (email):
             queryset = queryset.filter(email=email)
@@ -37,19 +40,9 @@ class MovieViewSet(viewsets.ModelViewSet):
         name = self.request.query_params.get("name")
         queryset_length = self.request.query_params.get("amount")
 
-        def isInclude(value):
-            value = vars(value)["name"].lower()
-            index = value.find(name)
-
-            if (index != -1):
-                return True
-            else:
-                return False
-
         if (queryset_length):
             if (name != "false"): #поиск по названию
-                name = name.lower()
-                queryset = filter(isInclude, queryset)
+                queryset = queryset.filter(name__iregex=name)
                 queryset = list(queryset)
                 queryset = queryset[:int(queryset_length)]
             else: #поиск последних queryset_length фильмов
@@ -72,6 +65,17 @@ class MovieCommentViewSet(viewsets.ModelViewSet):
 class CinemaViewSet(viewsets.ModelViewSet):
     queryset = CinemaModel.objects.all()
     serializer_class = CinemaSerializer
+
+    def get_queryset(self):
+        queryset = CinemaModel.objects.all()
+        name = self.request.query_params.get("name")
+        queryset_length = self.request.query_params.get("amount")
+
+        if (queryset_length and name): #поиск по названию
+                queryset = queryset.filter(name__iregex=name)
+                queryset = list(queryset)
+                queryset = queryset[:int(queryset_length)]
+        return queryset
 
 class CinemaRoomViewSet(viewsets.ModelViewSet):
     queryset = CinemaRoomModel.objects.all()
@@ -108,5 +112,16 @@ class FilmTicketViewSet(viewsets.ModelViewSet):
         queryset = FilmTicketModel.objects.all()
         userId = self.request.query_params.get("userId")
         if (userId):
-            queryset = queryset.filter(userId = userId)
+            queryset = queryset.filter(userId=userId)
+        return queryset
+
+class CinemaComingSoonViewSet(viewsets.ModelViewSet):
+    queryset = CinemaComingSoonModel.objects.all()
+    serializer_class = CinemaComingSoonSerializer
+
+    def get_queryset(self):
+        queryset = CinemaComingSoonModel.objects.all()
+        cinemaId = self.request.query_params.get("cinemaId")
+        if (cinemaId):
+            queryset = queryset.filter(cinemaId=cinemaId)
         return queryset

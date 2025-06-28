@@ -9,10 +9,18 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
         Credentials({
             authorize: async (credentials) => {
                 try {
-                    let user = null
+                    if (credentials.password === "null") {
+                        credentials.password = null
+                    }
 
-                    user = await axios.get("http://127.0.0.1:8000/users/")
-                    user = user.data.find(user => user.name === credentials.name && user.password === credentials.password)
+                    let user = null
+                    user = await axios.get("http://127.0.0.1:8000/users/", {
+                        params: {
+                            name: credentials.name,
+                            password: credentials.password
+                        }
+                    })
+                    user = user.data[0]
                     user = {
                         id: user.id,
                         name: user.name,
@@ -20,7 +28,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                         admin: user.admin,
                         cinemaAdmin: user.cinemaAdmin ? Number(URLSlice(user.cinemaAdmin, 30)) : null
                     }
-
                     return user
                 } catch (error) {
                     return null
@@ -70,7 +77,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
                 token.name = DBuser.name
                 token.email = profile.email
                 token.admin = false
-                token.cinemaAdmin = null
+                token.cinemaAdmin = DBuser.cinemaAdmin ? Number(URLSlice(DBuser.cinemaAdmin, 30)) : null
             }
 
             return token;
@@ -83,6 +90,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             session.user.cinemaAdmin = token.cinemaAdmin;
             return session;
         },
+        async redirect({baseUrl}) {
+            return baseUrl
+        }
     },
     secret: process.env.NEXTAUTH_SECRET
 })

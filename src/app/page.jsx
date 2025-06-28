@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { getSomeFilms } from "@/features/filmsSlice";
+import { FilmRating } from "./components/FilmRating";
 import Link from "next/link";
 
 import styles from "@/app/css/MainPage.module.css";
@@ -47,11 +48,16 @@ const MainPage = () => {
                 {films.map(film => 
                     <div key={film.id} id={styles.oneFilm} style={{marginTop:'10em'}}>
                         <Link href={`/film?id=${film.id}`}>
-                            <div style={{borderRadius:'15px', backgroundColor:'#2d2d2d', width:'200px', height:'300px'}}/>
+                            <img src={film.poster} style={{borderRadius:'15px'}}/>
                         </Link>
 
-                        <Link href={`/film?id=${film.id}`} style={{height:'fit-content', marginLeft:'5px'}}>
+                        <Link href={`/film?id=${film.id}`} style={{height:'fit-content', marginLeft:'5px', whiteSpace: 'nowrap'}}>
                             <h2>{film.ageRating}+ {film.name}</h2>
+                            <FilmRating 
+                                rating={film.rating}
+                                starRating={film.starRating}
+                            />
+                            
                         </Link>
                     </div>
                 )} 

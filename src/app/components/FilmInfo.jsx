@@ -3,13 +3,14 @@
 import styles from "@/app/css/SingleFilm.module.css";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { FilmRating } from "./FilmRating";
 
 const FeatureComponent = (props) => {
     return <><h4>{props.title}: <span>{props.value}</span></h4></>
 }
 
 const FilmInfo = (props) => {
-    const {filmInfo, showCommentsLink, showSimilar, showPoster} = props
+    const {filmInfo, showCommentsLink, showSimilar, showPoster, showRating} = props
 
     const [filmInfoPoster, setfilmInfoPoster] = useState(null)
 
@@ -33,6 +34,14 @@ const FilmInfo = (props) => {
 
             <section id={styles.infoSection}>
                 <h1>{filmInfo.name}</h1>
+                
+                {showRating &&
+                    <FilmRating
+                        rating={filmInfo.rating}
+                        starRating={filmInfo.starRating}
+                    />
+                }
+
                 <div style={{marginTop:'30px', marginBottom:'30px'}}>
                     <FeatureComponent title="Возрастное ограничение" value={`${filmInfo.ageRating}+`}/>
                     <FeatureComponent title="Год" value={filmInfo.publishYear}/>

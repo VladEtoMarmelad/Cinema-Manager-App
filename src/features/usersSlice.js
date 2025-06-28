@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { SignIn } from "@/sign-in";
+import { signIn } from 'next-auth/react';
 import { userSchema } from '@/zod/userSchema';
 import { signInSchema } from '@/zod/signInSchema';
 import { catchValidationErrors } from '@/zod/catchValidationErrors';
@@ -22,7 +22,7 @@ export const addUser = createAsyncThunk("users/addUser", async (userData) => {
             password: password,
             admin: false
         })
-        SignIn({name, email, password})
+        signIn("credentials", {name, email, password})
 
     } catch (error) {
         return catchValidationErrors(error)
@@ -38,7 +38,7 @@ export const SignInRedux = createAsyncThunk("users/signIn", async (userData) => 
             password: password
         })
 
-        SignIn({name, password})
+        signIn("credentials", {name, password})
 
     } catch (error) {
         return catchValidationErrors(error)

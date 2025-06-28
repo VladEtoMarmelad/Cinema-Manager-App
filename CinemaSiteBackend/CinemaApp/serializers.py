@@ -1,91 +1,52 @@
 from rest_framework import serializers
 from .models import (UserModel, MovieModel, MovieCommentModel,
                      CinemaModel, CinemaRoomModel, FilmSessionModel,
-                     FilmTicketModel)
+                     FilmTicketModel, CinemaComingSoonModel)
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
     class Meta:
         model = UserModel
-        fields = [
-            "id",
-            "name",
-            "email",
-            "password",
-            "admin",
-            "cinemaAdmin"
-        ]
+        fields = "__all__"
 
 class MovieSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
     class Meta:
         model = MovieModel
-        fields = [
-            "id",
-            "name",
-            "description",
-            "ageRating",
-            "publishYear",
-            "language",
-            "studio",
-            "duration",
-            "director",
-            "scenarist",
-            "production",
-            "poster",
-            "rating"
-        ]
+        fields = "__all__"
 
 class MovieCommentSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
     class Meta:
         model = MovieCommentModel
-        fields = [
-            "id",
-            "movieId",
-            "userId",
-            "name",
-            "description",
-            "rating"
-        ]
+        fields = "__all__"
 
 class CinemaSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
     class Meta:
         model = CinemaModel
-        fields = [
-            "id",
-            "name"
-        ]
+        fields = "__all__"
 
 class CinemaRoomSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
     class Meta:
         model = CinemaRoomModel
-        fields = [
-            "id",
-            "cinemaId",
-            "defaultSeats",
-        ]
+        fields = "__all__"
 
 class FilmSessionSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
     class Meta:
         model = FilmSessionModel
-        fields = [
-            "id",
-            "cinemaId",
-            "roomId",
-            "film",
-
-            "sessionTime",
-            "seats"
-        ]
+        fields = "__all__"
 
 class FilmTicketSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
     class Meta:
         model = FilmTicketModel
-        fields = [
-            "id",
-            "userId",
-            "filmSessionId",
+        fields = "__all__"
 
-            "seatType",
-            "seatNumber",
-            "seatRowIndex",
-            "seatIndex"
-        ]
+class CinemaComingSoonSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField()
+    class Meta:
+        model = CinemaComingSoonModel
+        fields = "__all__"

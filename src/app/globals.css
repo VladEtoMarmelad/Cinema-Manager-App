@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css");
 
 :root {
   --background: #f2f2f2;
@@ -44,23 +45,24 @@ input:focus, textarea:focus {
   border-bottom: 3px solid rgba(30, 30, 30, 0.55);
 }
 
-select::picker-icon {
-  color: #999;
-  transition: 0.4s rotate;
-}
-
 select:open::picker-icon {
-  rotate: 180deg;
+  rotate: -180deg;
 }
 
 ::picker(select) {
-  border-radius: 7.5px;
+  border-radius: 5px;
   opacity: 0;
-  transition: all 0.75s allow-discrete;
+  transition: all 0.5s allow-discrete;
 }
 
 ::picker(select):popover-open {
   opacity: 1;
+}
+
+option::checkmark {
+  order: 0;
+  font-family: "bootstrap-icons";
+  content: "\F633";
 }
 
 .grayButton{

@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getSession } from 'next-auth/react';
-import { SignIn } from '@/sign-in';
+import { signIn } from 'next-auth/react';
 import { cinemaRoomSchema } from '@/zod/cinemaRoomSchema';
 import { catchValidationErrors } from '../zod/catchValidationErrors';
 import axios from 'axios';
@@ -18,7 +18,7 @@ export const addCinema = createAsyncThunk("cinema/add", async (data) => {
         let user = await axios.get(`http://127.0.0.1:8000/users/${userId}/`)
         user = user.data
 
-        SignIn({
+        signIn("credentials", {
             name: user.name,
             password: user.password
         }) //обновление сессии
@@ -61,7 +61,8 @@ const cinemaInteractSlice = createSlice({
     name: "cinemaInteract",
     initialState: {
         cinemaInfo: {
-            name: ""
+            name: "",
+            description: ""
         },
         roomInfo: {
             defaultSeats: [

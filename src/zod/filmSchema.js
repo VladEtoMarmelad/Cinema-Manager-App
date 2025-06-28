@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import axios from 'axios';
 
 const filmSchema = z.object({
     name: z.string().min(1, "Убедитесь, что поле названия заполнено"),
@@ -11,10 +12,15 @@ const filmSchema = z.object({
     scenarist: z.string().min(1, "Убедитесь, что сценарист указан"),
     production: z.string().min(1, "Убедитесь, что страна производства указана")
 }).superRefine(async (value, ctx) => {
-    let allFilms = await axios.get("http://127.0.0.1:8000/movies/")
-    allFilms = allFilms.data
+    const filmWithSameName = await axios.get("http://127.0.0.1:8000/movies/", {
+        params: {
+            name: value.name,
+            amount: 1 
+        }
+    })
+    const filmExists = filmWithSameName.data.length > 0 ? true : false 
 
-    if (allFilms.find(film => film.name === value.name)) {
+    if (filmExists) {
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: "Этот фильм уже добавлен на сайт"

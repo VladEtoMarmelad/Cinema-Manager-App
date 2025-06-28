@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { URLSlice } from '@/URLSlice.mjs';
 import { fromDBTimeFormat } from '@/dateConverter';
 import axios from 'axios';
 
@@ -43,9 +42,21 @@ export const getSomeFilms = createAsyncThunk("films/getSome", async (amount, {ge
                 }
             })
 
+            const normalized = film.rating / 2
+            const fullCount = Math.floor(normalized);
+            const halfCount = normalized % 1 === 0.5 ? 1 : 0;
+            const emptyCount = 5 - fullCount - halfCount;
+
+            const starRating = [
+                ...Array(fullCount).fill("full"),
+                ...Array(halfCount).fill("half"),
+                ...Array(emptyCount).fill("empty")
+            ]
+
             return {
                 ...film,
-                timeTable: filmSessions
+                timeTable: filmSessions,
+                starRating
             }
         })
     )
@@ -76,10 +87,22 @@ export const getSingleFilm = createAsyncThunk("film/get", async (filmId, {getSta
                 sessionTime: newSessionTime
             }
         })
-        
-        film.timeTable = filmSessions
 
-        return film
+        const normalized = film.rating / 2
+        const fullCount = Math.floor(normalized);
+        const halfCount = normalized % 1 === 0.5 ? 1 : 0;
+        const emptyCount = 5 - fullCount - halfCount;
+
+        const starRating = [
+            ...Array(fullCount).fill("full"),
+            ...Array(halfCount).fill("half"),
+            ...Array(emptyCount).fill("empty")
+        ]
+
+        film.timeTable = filmSessions
+        film.starRating = starRating
+
+        return {film, filmId}
     }
 })
 
@@ -92,7 +115,11 @@ const filmSlice = createSlice({
         status: "idle",
         error: null
     },
-    reducers: {},
+    reducers: {
+        clearSearchFilms: (state) => {
+            state.searchFilms = []
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getSomeFilmsByName.fulfilled, (state, action) => {
@@ -109,11 +136,14 @@ const filmSlice = createSlice({
                 state.lastFilmsLoadStatus = true
             })
             .addCase(getSingleFilm.fulfilled, (state, action) => {
-                if (action.payload) {
-                    let newFilmsState = state.films
-                    newFilmsState.push(action.payload)
+                const {film, filmId} = action.payload
+                if (film) {
+                    if (!state.films.find(film => film.id === filmId)) {
+                        let newFilmsState = state.films
+                        newFilmsState.push(film)
 
-                    state.films = newFilmsState
+                        state.films = newFilmsState
+                    }
                 }
                 state.status = "succeeded"
             })
@@ -129,3 +159,4 @@ const filmSlice = createSlice({
 });
 
 export default filmSlice.reducer;
+export const { clearSearchFilms } = filmSlice.actions

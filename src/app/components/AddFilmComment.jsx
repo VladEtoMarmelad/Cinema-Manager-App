@@ -19,10 +19,10 @@ const AddFilmComment = () => {
     const validationErrors = useSelector(state => state.filmComments.validationErrors)
     const dispatch = useDispatch();
 
-    const addFilmComment = (e) => {
+    const addFilmComment = async (e) => {
         e.preventDefault();
         const userId = session.data.user.id
-        dispatch(
+        await dispatch(
             addComment({
                 name: name,
                 description: description,
@@ -31,7 +31,8 @@ const AddFilmComment = () => {
                 movieId: `http://127.0.0.1:8000/movies/${filmId}/`,
                 userId: `http://127.0.0.1:8000/users/${userId}/`
             })
-        )
+        ).unwrap()
+        window.location.reload()
     }
 
     if (session.status === "loading") return <h1>Загрузка...</h1>

@@ -5,10 +5,12 @@ import { addFilm, changeFilmInfo } from '@/features/filmInteractSlice';
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { FilmInfo } from '@/app/components/FilmInfo';
+import { useRouter } from 'next/navigation';
 import styles from "@/app/css/SingleFilm.module.css";
 
 const FilmInteract = () => {
     const session = useSession();
+    const router = useRouter();
 
     const dispatch = useDispatch();
     const filmInfo = useSelector((state) => state.filmInteract.filmInfo)
@@ -34,9 +36,9 @@ const FilmInteract = () => {
     if (session.status === "unauthenticated") return <p>Нужно войти в аккаунт...</p>
     if (session.status === "authenticated" && !session.data.user.admin) return <p>Добавлять и редактировать фильмы могут только админы сайта</p>
 
-    const addFilmHandler = (e) => {
+    const addFilmHandler = async (e) => {
         e.preventDefault();
-        dispatch(addFilm({
+        await dispatch(addFilm({
             name: filmInfo.name, 
             description: filmInfo.description,
             ageRating: filmInfo.ageRating,
@@ -47,7 +49,8 @@ const FilmInteract = () => {
             director: filmInfo.director,
             scenarist: filmInfo.scenarist,
             production: filmInfo.production
-        }))
+        })).unwrap()
+        //router.replace(`/film?id=${}`)
     }
 
     return (

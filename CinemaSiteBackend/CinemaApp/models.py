@@ -6,6 +6,7 @@ class CinemaModel(models.Model):
     id = models.BigAutoField(primary_key=True)
 
     name = models.CharField(max_length=100)
+    description = models.TextField(null=True)
 
 class UserModel(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -81,3 +82,10 @@ class FilmTicketModel(models.Model):
     seatNumber = models.PositiveIntegerField(null=True)
     seatRowIndex = models.PositiveIntegerField()
     seatIndex = models.PositiveIntegerField()
+
+class CinemaComingSoonModel(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    cinemaId = models.ForeignKey(CinemaModel, on_delete=models.CASCADE)
+    filmId = models.ForeignKey(MovieModel, on_delete=models.CASCADE)
+
+    closestSessionTime = models.DateField()
