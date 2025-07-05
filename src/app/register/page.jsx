@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { changeUserInfo } from "@/features/usersSlice"
 import { addUser } from "@/features/usersSlice"
 import { GoogleSignInButton } from "../components/GoogleSignInButton"
+import { ValidationErrors } from "../components/ValidationErrors"
 import Link from "next/link";
 import styles from "@/app/css/Auth.module.css"
 
@@ -30,13 +31,7 @@ const Register = () => {
 
     return (
         <div className={`centerContainer ${styles.generalDiv}`}>
-            {validationErrors.length > 0 &&
-                <section className="errorSection" style={{marginBottom: '15px'}}>
-                    {validationErrors.map((error, index) => 
-                        <li key={index}>{error}</li>
-                    )}
-                </section>
-            }
+            <ValidationErrors errors={validationErrors}/>
 
             <form onSubmit={registerHandler}>
                 <input 

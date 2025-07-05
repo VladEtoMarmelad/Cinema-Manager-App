@@ -31,7 +31,7 @@ class MovieModel(models.Model):
     scenarist = models.CharField(default="Сценарист не указан", max_length=50)
     production = models.CharField(default="Страна производителя не указана", max_length=50)
     poster = models.ImageField(upload_to="images/posters/", default="images/posters/default.PNG")
-    rating = models.PositiveIntegerField(default=1)
+    rating = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -48,11 +48,11 @@ class MovieCommentModel(models.Model):
     def __str__(self):
         return self.name
 
-
 class CinemaRoomModel(models.Model):
     id = models.BigAutoField(primary_key=True)
     cinemaId = models.ForeignKey(CinemaModel, on_delete=models.CASCADE)
 
+    number = models.PositiveIntegerField(null=True)
     defaultSeats = models.JSONField(default=dict)
 
 class FilmSessionModel(models.Model):

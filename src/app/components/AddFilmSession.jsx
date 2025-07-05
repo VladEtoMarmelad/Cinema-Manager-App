@@ -4,21 +4,24 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchCinemaRooms } from "@/features/cinemaSlice";
 import { addFilmSession, changeFilmSessionsInfo } from "@/features/filmSessionInteractSlice";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { getSomeFilmsByName } from "@/features/filmsSlice";
+import { ValidationErrors } from "./ValidationErrors";
 import styles from "@/app/css/CinemaAdminPage.module.css"
 
 const AddFilmSession = () => {
     const searchFilms = useSelector(state => state.films.searchFilms)
     const allCinemaRooms = useSelector(state => state.cinema.rooms)
     const filmSessionInfo = useSelector(state => state.filmSessionInteract.filmSessionInfo)
+    const validationErrors = useSelector(state => state.filmSessionInteract.validationErrors)
     const dispatch = useDispatch();
 
     const [filmName, setFilmName] = useState("");
-    const [filmId, setFilmId] = useState(null);
+    const [showSearchFilms, setShowSearchFilms] = useState(false)
 
     const searchParams = useSearchParams();
     const cinemaId = Number(searchParams.get("id"));
+    const router = useRouter();
 
     useEffect(() => {
         dispatch(fetchCinemaRooms(cinemaId))
@@ -38,7 +41,11 @@ const AddFilmSession = () => {
             roomId: `http://127.0.0.1:8000/cinemaRooms/${filmSessionInfo.roomId}/`,
             film: `http://127.0.0.1:8000/movies/${filmSessionInfo.film}/`,
             sessionTime: filmSessionInfo.sessionTime
-        }))
+        })).unwrap().then((addedFilmSession) => {
+            if (!addedFilmSession.gotValidationErrors) {
+                router.replace(`/cinema/filmSession?id=${addedFilmSession.id}`)
+            }
+        })
     }
 
     return (
@@ -55,7 +62,7 @@ const AddFilmSession = () => {
                                 <option 
                                     key={room.id} 
                                     value={room.id}
-                                >Комната {room.id}</option>
+                                >Комната {room.number}</option>
                             )}
                         </select>
                         <input 
@@ -78,15 +85,17 @@ const AddFilmSession = () => {
                                 );
                                 setFilmName(e.target.value)
                             }}
+                            onFocus={() => setShowSearchFilms(true)}
                             placeholder="Введите название фильма..."
                         />
-                        {searchFilms.map(film => 
+                        {showSearchFilms && searchFilms.map(film => 
                             <button 
                                 key={film.id} 
                                 onClick={(e) => {
                                     e.preventDefault();
                                     changeFilmSessionsInfoHandler("film", film.id);
                                     setFilmName(film.name)
+                                    setShowSearchFilms(false)
                                 }}
                                 className={styles.filmInputButton}
                             >{film.name}</button>
@@ -99,6 +108,8 @@ const AddFilmSession = () => {
                     className="blackButton" 
                     style={{margin:'15px'}}
                 >Добавить сеанс фильма</button>
+
+                <ValidationErrors errors={validationErrors}/>
             </form>
         </section>
     )

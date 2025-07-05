@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { getSomeFilms } from "@/features/filmsSlice";
 import { FilmRating } from "./components/FilmRating";
+import { FilmInfo } from "./components/FilmInfo";
 import Link from "next/link";
-
 import styles from "@/app/css/MainPage.module.css";
+
 const MainPage = () => {
 
     const films = useSelector((state) => state.films.films);
@@ -20,7 +21,7 @@ const MainPage = () => {
 
     useEffect(() => {
         if (lastFilmsLoadStatus === false && lastFilmsLoadStatusGlobalState === false) {
-            dispatch(getSomeFilms(3))
+            dispatch(getSomeFilms(7))
         }
         lastFilmsLoadStatus = true
     }, [lastFilmsLoadStatus])
@@ -33,34 +34,44 @@ const MainPage = () => {
     if (status === 'failed') return <p>Ошибка загрузки {error}</p>;
 
     return (
-        <div >
-            <Link id={styles.newFilms} href={lastFilm ? `/film?id=${lastFilm.id}` : "/"}>
-                {
-                    lastFilm &&
-                        <div style={{position:'relative', top:'2.5em', left:'2.5em'}}>
-                            <h1>Название последнего известного фильма: {lastFilm.name}</h1>
-                            <p>Описание последнего известного фильма: {lastFilm.description}</p>
-                        </div>
-                }
-            </Link>
-                
-            <section id={styles.allFilms}>
-                {films.map(film => 
-                    <div key={film.id} id={styles.oneFilm} style={{marginTop:'10em'}}>
-                        <Link href={`/film?id=${film.id}`}>
-                            <img src={film.poster} style={{borderRadius:'15px'}}/>
-                        </Link>
-
-                        <Link href={`/film?id=${film.id}`} style={{height:'fit-content', marginLeft:'5px', whiteSpace: 'nowrap'}}>
-                            <h2>{film.ageRating}+ {film.name}</h2>
-                            <FilmRating 
-                                rating={film.rating}
-                                starRating={film.starRating}
-                            />
-                            
-                        </Link>
+        <div>
+            {lastFilm &&
+                <Link id={styles.latestFilms} href={lastFilm ? `/film?id=${lastFilm.id}` : "/"}>
+                    <FilmInfo 
+                        filmInfo={lastFilm}
+                        showPoster={true}
+                        showRating={true}
+                    />
+                    <div style={{width:'45%', marginLeft:'5%'}}>
+                        <p>
+                            {lastFilm.description.slice(0, 750)}
+                            {lastFilm.description.length>750 && "..."}
+                        </p>
                     </div>
-                )} 
+                </Link>
+            }
+
+            <section id={styles.allFilms}>
+                {films.map((film, index) => {
+                    if (index!==0) {
+                        return (
+                            <div key={film.id} id={styles.oneFilm} style={{marginTop:'10em'}}>
+                                <Link href={`/film?id=${film.id}`}>
+                                    <img src={film.poster} className={styles.poster}/>
+                                </Link>
+
+                                <Link href={`/film?id=${film.id}`} style={{height:'fit-content', marginLeft:'5px', whiteSpace: 'nowrap'}}>
+                                    <h2>{film.ageRating}+ {film.name}</h2>
+                                    <FilmRating 
+                                        rating={film.rating}
+                                        starRating={film.starRating}
+                                    />
+                                    
+                                </Link>
+                            </div>
+                        )
+                    }
+                })} 
             </section>
         </div>
     )

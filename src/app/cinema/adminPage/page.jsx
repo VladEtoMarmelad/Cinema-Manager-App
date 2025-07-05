@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { AddRoom } from "@/app/components/AddRoom";
 import { AddFilmSession } from "@/app/components/AddFilmSession";
+import { AddComingSoonFilm } from "@/app/components/AddComingSoonFilm";
 import Link from "next/link";
 import styles from "@/app/css/CinemaAdminPage.module.css"
 
@@ -21,6 +22,7 @@ const CinemaAdminPage = () => {
         <div className={styles.container} style={{marginLeft:'-4.5em'}}>
             <AddRoom />
             <AddFilmSession />
+            <AddComingSoonFilm />
         </div>
     )
 }

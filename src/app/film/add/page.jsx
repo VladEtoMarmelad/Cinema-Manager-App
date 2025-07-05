@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { FilmInfo } from '@/app/components/FilmInfo';
 import { useRouter } from 'next/navigation';
+import { ValidationErrors } from '@/app/components/ValidationErrors';
 import styles from "@/app/css/SingleFilm.module.css";
 
 const FilmInteract = () => {
@@ -49,8 +50,11 @@ const FilmInteract = () => {
             director: filmInfo.director,
             scenarist: filmInfo.scenarist,
             production: filmInfo.production
-        })).unwrap()
-        //router.replace(`/film?id=${}`)
+        })).unwrap().then((addedFilm) => {
+            if (!addedFilm.gotValidationErrors) {
+                router.replace(`/film?id=${addedFilm.id}`)
+            }
+        })
     }
 
     return (
@@ -169,14 +173,7 @@ const FilmInteract = () => {
                 </span>
             </form>
 
-            {validationErrors.length > 0 &&
-                <section className="errorSection" style={{marginBottom: '15px'}}>
-                    {validationErrors.map((error, index) => 
-                        <li key={index}>{error}</li>
-                    )}
-                </section>
-            }
-
+            <ValidationErrors errors={validationErrors}/>
         </>
     )
 }

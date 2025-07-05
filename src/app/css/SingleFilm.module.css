@@ -23,12 +23,14 @@
 #poster {
     height: 300px;
     width: auto;
+    max-width: fit-content;
     border-radius: 15px;
 }
 
 #infoSection {
     max-width: 35%;
     display: block;
+    white-space: pre-line;
     flex-wrap: wrap;
 }
 
@@ -64,4 +66,23 @@
 #timeTable a:hover {
     color: wheat;
     box-shadow: 0px 2.5px 7.5px rgba(255, 222, 173, 0.5);
+}
+
+.similarFilmsSection {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.similarFilm {
+    text-align: center;
+}
+
+.similarFilm img {
+    height: 100%;
+    max-height: 300px;
+    min-height: 200px;
+    width: auto;
+    min-width: 125px;
+    border-radius: 15px;
 }

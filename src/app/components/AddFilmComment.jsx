@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useDispatch, useSelector } from "react-redux";
 import { addComment } from "@/features/filmCommentsSlice";
+import { ValidationErrors } from "./ValidationErrors";
 
 const AddFilmComment = () => {
     
@@ -31,8 +32,11 @@ const AddFilmComment = () => {
                 movieId: `http://127.0.0.1:8000/movies/${filmId}/`,
                 userId: `http://127.0.0.1:8000/users/${userId}/`
             })
-        ).unwrap()
-        window.location.reload()
+        ).unwrap().then(addedComment => {
+            if (!addedComment.gotValidationErrors) {
+                window.location.reload()
+            }
+        })
     }
 
     if (session.status === "loading") return <h1>Загрузка...</h1>
@@ -40,13 +44,8 @@ const AddFilmComment = () => {
 
     return (
         <>
-            {validationErrors.length > 0 && 
-                <section className="errorSection" style={{marginTop:'25px'}}>
-                    {validationErrors.map((validationError, index) => 
-                        <li key={index}>{validationError}</li>
-                    )}
-                </section>
-            }
+            <ValidationErrors errors={validationErrors}/>
+            
             <form onSubmit={addFilmComment}>
 
                 <input 

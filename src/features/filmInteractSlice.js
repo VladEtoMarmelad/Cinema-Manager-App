@@ -11,14 +11,23 @@ export const addFilm = createAsyncThunk("films/addFilm", async (filmData) => {
         let data = Object.assign({}, filmData)
         data.poster = poster
 
-        axios.post("http://127.0.0.1:8000/movies/", data, {
+        const addedFilm = await axios.post("http://127.0.0.1:8000/movies/", data, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
         });
 
+        console.log("addedFilm:", addedFilm)
+
+        return {
+            gotValidationErrors: false,
+            id: addedFilm.data.id
+        }
     } catch (error) {
-        return catchValidationErrors(error)
+        return {
+            gotValidationErrors: true,
+            value: catchValidationErrors(error)
+        }
     }
 })
 
@@ -50,12 +59,16 @@ const filmInteractSlice = createSlice({
     extraReducers: (builder) => {
             builder
                 .addCase(addFilm.fulfilled, (state, action) => {
-                    if (action.payload) {
-                        state.validationErrors = action.payload
+                    if (action.payload.gotValidationErrors) {
+                        state.validationErrors = action.payload.value
                     }
                 })
                 .addCase(addFilm.pending, (state) => {
                     state.validationErrors = []
+                })
+                .addCase(addFilm.rejected, (state, action) => {
+                    state.status = "failed";
+                    state.error = action.error.message;
                 })
         }
 });

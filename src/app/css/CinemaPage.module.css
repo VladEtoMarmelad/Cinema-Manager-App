@@ -4,8 +4,8 @@
 }
 
 .bgImage {
-    width: 250px; 
-    height: auto; 
+    height: 350px;
+    width: auto;
     filter: blur(8px);
     border-radius: 25px;
     background-position: center;
@@ -24,8 +24,12 @@
 
 .filmSessionsRibbonElement {
     display: flex;
+    flex-wrap: wrap;
     flex-direction: column;
-
+    justify-content: center;
+    align-content: center;
+    text-align: center;
+    
     background-color: rgb(0,0,0); 
     background-color: rgba(0,0,0, 0.4); 
     color: white;
@@ -36,8 +40,10 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
-    width: fit-content;
     padding: 20px;
+
+    width: 200px;
+    height: 325px;
 }
 
 .filmSessionsRibbonElement img {
@@ -146,6 +152,11 @@
 .squareButton {
     width: 50px;
     height: 50px;
+    position: absolute;
+    top: 50%;
+    /* left: 50%; */
+    transform: translate(-50%, -50%);
+
     border-radius: 5px;
 
     transition: all 0.5s;

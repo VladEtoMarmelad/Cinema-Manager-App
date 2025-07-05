@@ -15,21 +15,21 @@ const SingleFilm = () => {
     const filmId = Number(searchParams.get("id"));
     const films = useSelector((state) => state.films.films);
     const status = useSelector((state) => state.films.status)
+    const errors = useSelector(state => state.films.error)
 
     const [film, setFilm] = useState(null);
 
-    console.log(films)
-
     useEffect(() => {
-        dispatch(getSingleFilm(filmId))
-    }, [])
+        dispatch(getSingleFilm(filmId)) //польностью срабатывет только при первой загрузке фильма
+        setFilm(films.find(film => film.id === Number(filmId))) // просто при смене filmId
+    }, [filmId])
 
     useEffect(() => {
         setFilm(films.find(film => film.id === Number(filmId)))
     }, [films])
 
     if (status === "loading") return <p>Загрузка...</p>
-    if (status === "failed") return <p>Ошибка загрузки</p>
+    if (status === "failed") return <p>{errors}</p>
     if (status !== "loading" && !film) return <p>Фильм не найден</p>
 
     return (
@@ -41,6 +41,7 @@ const SingleFilm = () => {
                 showSimilar={true} 
                 showPoster={true}
                 showRating={true}
+                showDescription={true}
             />
 
             <span style={{justifyContent: 'end'}}>

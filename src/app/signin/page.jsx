@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { changeUserInfo } from "@/features/usersSlice";
 import { GoogleSignInButton } from "../components/GoogleSignInButton";
 import { useSession } from "next-auth/react";
+import { ValidationErrors } from "../components/ValidationErrors";
 import styles from "@/app/css/Auth.module.css"
 
 const SignInPage = () => {
@@ -30,16 +31,7 @@ const SignInPage = () => {
 
     return (
         <div className={`centerContainer ${styles.generalDiv}`}>
-
-            {validationErrors.length > 0 && 
-                <section className="errorSection">
-                    {
-                        validationErrors.map((message, index) => 
-                            <li key={index}>{message}</li>
-                        )
-                    }
-                </section>
-            }
+            <ValidationErrors errors={validationErrors}/>
 
             <form onSubmit={formAuthorizeHandler}>
                 <input 

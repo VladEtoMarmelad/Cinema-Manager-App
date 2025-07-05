@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
 import { signIn } from 'next-auth/react';
 import { userSchema } from '@/zod/userSchema';
 import { signInSchema } from '@/zod/signInSchema';
@@ -67,22 +67,13 @@ const usersSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(addUser.fulfilled, (state, action) => {
+            .addMatcher(isAnyOf(SignInRedux.pending, addUser.pending), (state) => {
+                state.validationErrors = []
+            })
+            .addMatcher(isAnyOf(SignInRedux.fulfilled, addUser.fulfilled), (state, action) => {
                 if (action.payload) {
                     state.validationErrors = action.payload
                 }
-            })
-            .addCase(addUser.pending, (state) => {
-                state.validationErrors = []
-            })
-
-            .addCase(SignInRedux.fulfilled, (state, action) => {
-                if (action.payload) {
-                    state.validationErrors = action.payload
-                }
-            })
-            .addCase(SignInRedux.pending, (state) => {
-                state.validationErrors = []
             })
     }
 });

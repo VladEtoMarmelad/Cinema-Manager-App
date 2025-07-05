@@ -2,23 +2,24 @@
 
 import { useSelector, useDispatch } from "react-redux"
 import { useEffect } from "react"
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { fetchSingleFilmSession } from "@/features/filmSessionSlice";
 import { rentCinemaSeat } from "@/features/filmSessionInteractSlice";
 import { FilmInfo } from "@/app/components/FilmInfo";
+import { ValidationErrors } from "@/app/components/ValidationErrors";
 import styles from "@/app/css/FilmSession.module.css"
 import Link from "next/link";
 
 const FilmSession = () => {
-
     const filmSession = useSelector((state) => state.filmSessions.filmSessions)
+    const validationErrors = useSelector(state => state.filmSessionInteract.validationErrors)
     const status = useSelector((state) => state.filmSessions.status)
     const error = useSelector((state) => state.filmSessions.error)
-
     const dispatch = useDispatch()
 
     const searchParams = useSearchParams();
     const filmSessionId = Number(searchParams.get("id"));
+    const router = useRouter();
 
     useEffect(() => {
         dispatch(fetchSingleFilmSession(filmSessionId))
@@ -33,11 +34,15 @@ const FilmSession = () => {
             filmSessionId: filmSessionId,
             seatIndex,
             rowIndex
-        }))
+        })).unwrap().then(rentedSeat => {
+            if (!rentedSeat.gotValidationErrors) {
+                router.push("/tickets")
+            }
+        })
     }
 
     return (
-        <div style={{width:'80%', margin:'auto', display:'flex', flexDirection:'row', gap:'25px'}}>
+        <div style={{width:'105%', position:'relative', right:'5em', display:'flex', flexDirection:'row'}}>
             <section>
                 <div style={{display:'flex', flexDirection:'column', justifyItems:'space-around'}}>
                     <div style={{display:'flex', gap:'15px', margin:'15px'}}>
@@ -74,6 +79,7 @@ const FilmSession = () => {
                         )   
                     )}
                 </section>
+                <ValidationErrors errors={validationErrors}/>
             </section>
 
             <section className={styles.filmSessionInfoSection}>
@@ -83,8 +89,8 @@ const FilmSession = () => {
                 </span>
 
                 <span>
-                    <h3>ID комнаты: </h3>
-                    <p>{filmSession.roomId}</p>
+                    <h3 style={{display:'inline'}}>Номер комнаты: </h3>
+                    <h4 style={{display:'inline'}}> {filmSession.roomNumber}</h4>
                 </span>
 
                 <span>

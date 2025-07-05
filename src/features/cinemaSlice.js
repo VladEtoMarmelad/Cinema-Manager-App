@@ -1,19 +1,34 @@
 import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { compareAsc, closestIndexTo } from "date-fns";
-import { fromDBTimeFormat, fromDBTimeFormatDateOnly } from '@/dateConverter';
+import { compareAsc, closestIndexTo, isBefore } from "date-fns";
+import { fromDBTimeFormat, fromDBTimeFormatDateOnly } from '@/utils/dateConverter';
 
 export const fetchCinema = createAsyncThunk("cinema/get", async (cinemaId) => {
     let cinema = await axios.get(`http://127.0.0.1:8000/cinemas/${cinemaId}/`)
     cinema = cinema.data
 
-    const allCinemaFilmSessions = await axios.get("http://127.0.0.1:8000/filmSessions/", {
+    let allCinemaFilmSessions = await axios.get("http://127.0.0.1:8000/filmSessions/", {
         params: {
             cinemaId
         }
     })
+    allCinemaFilmSessions = allCinemaFilmSessions.data
 
-    let allCinemaFilmSessionsSorted = allCinemaFilmSessions.data.sort((a, b) =>
+    const now = new Date()
+    for (let i = allCinemaFilmSessions.length - 1; i >= 0; i-=1) { //удаление киносессий из БД и списка если они уже прошли
+        if ( isBefore(allCinemaFilmSessions[i].sessionTime, now) ) {
+            try {
+                await axios.delete(allCinemaFilmSessions[i].url)
+            } catch (error) {
+                if (error.response && error.response.status !== 404) {
+                    throw error;
+                }
+            }
+            allCinemaFilmSessions.splice(i, 1)
+        } 
+    }
+
+    let allCinemaFilmSessionsSorted = allCinemaFilmSessions.sort((a, b) =>
         compareAsc(a.sessionTime, b.sessionTime)
     );
     let allSessionTimes = []
@@ -33,10 +48,26 @@ export const fetchCinema = createAsyncThunk("cinema/get", async (cinemaId) => {
     );
     cinema.filmSessions = filmSessionsWithFilm
 
-    const comingSoonFilms = await axios.get("http://127.0.0.1:8000/cinemaComingSoonFilms/", {
+    let comingSoonFilms = await axios.get("http://127.0.0.1:8000/cinemaComingSoonFilms/", {
         params: {cinemaId}
     })
-    const comingSoonFilmsSorted = comingSoonFilms.data.sort((a, b) =>
+    comingSoonFilms = comingSoonFilms.data
+
+    for (let i = comingSoonFilms.length - 1; i >= 0; i-=1) { //удаление "Скоро в прокате" из БД и списка если их ближайший сеанс уже прошол
+        if ( isBefore(comingSoonFilms[i].closestSessionTime, now) ) {
+            try {
+                await axios.delete(comingSoonFilms[i].url)
+            } catch (error) {
+                if (error.response && error.response.status !== 404) {
+                    throw error;
+                }
+            }
+            comingSoonFilms.splice(i, 1)
+        }
+    }
+    
+
+    const comingSoonFilmsSorted = comingSoonFilms.sort((a, b) =>
         compareAsc(a.sessionTime, b.sessionTime)
     );
     const comingSoonFilmsWithFilms = await Promise.all(
@@ -51,7 +82,9 @@ export const fetchCinema = createAsyncThunk("cinema/get", async (cinemaId) => {
     );
     cinema.comingSoonFilms = comingSoonFilmsWithFilms
 
-    const now = new Date();
+    console.log(now)
+    console.log(allSessionTimes)
+
     const closestFilmSessionIndex = closestIndexTo(now, allSessionTimes)
 
     console.log(cinema)

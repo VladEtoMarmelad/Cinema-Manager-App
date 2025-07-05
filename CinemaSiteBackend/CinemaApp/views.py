@@ -10,6 +10,8 @@ from .models import (UserModel, MovieModel, MovieCommentModel,
 from .serializers import (UserSerializer, MovieSerializer, MovieCommentSerializer,
                           CinemaSerializer, CinemaRoomSerializer, FilmSessionSerializer,
                           FilmTicketSerializer, CinemaComingSoonSerializer)
+import random
+from django.db.models import Q
 
 # Create your views here.
 
@@ -39,6 +41,29 @@ class MovieViewSet(viewsets.ModelViewSet):
         queryset = MovieModel.objects.all()
         name = self.request.query_params.get("name")
         queryset_length = self.request.query_params.get("amount")
+
+        searchSimilar = self.request.query_params.get("searchSimilar")
+        id = self.request.query_params.get("id")
+        publishYear = self.request.query_params.get("publishYear")
+        studio = self.request.query_params.get("studio")
+        director = self.request.query_params.get("director")
+        scenarist = self.request.query_params.get("scenarist")
+
+        if (searchSimilar):
+            queryset = queryset.exclude(pk=id)
+            filters = Q()
+            if name:
+                filters |= Q(name__iregex=name)
+            if publishYear:
+                filters |= Q(publishYear=publishYear)
+            if studio:
+                filters |= Q(studio=studio)
+            if director:
+                filters |= Q(director=director)
+            if scenarist:
+                filters |= Q(scenarist=scenarist)
+
+            return queryset.filter(filters)
 
         if (queryset_length):
             if (name != "false"): #поиск по названию
@@ -122,6 +147,9 @@ class CinemaComingSoonViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = CinemaComingSoonModel.objects.all()
         cinemaId = self.request.query_params.get("cinemaId")
+        filmId = self.request.query_params.get("filmId")
         if (cinemaId):
             queryset = queryset.filter(cinemaId=cinemaId)
+        if (filmId):
+            queryset = queryset.filter(filmId=filmId)
         return queryset

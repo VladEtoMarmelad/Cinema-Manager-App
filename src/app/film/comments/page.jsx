@@ -8,6 +8,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { AddFilmComment } from "@/app/components/AddFilmComment";
 import { useSession } from "next-auth/react";
 import { deleteComment } from "@/features/filmCommentsSlice";
+import { FilmInfo } from "@/app/components/FilmInfo";
+import { FilmRating } from "@/app/components/FilmRating";
 import styles from "@/app/css/FilmComments.module.css"
 
 const FilmComments = () => {
@@ -76,15 +78,15 @@ const FilmComments = () => {
 
     return (
         <>
-            <section id={styles.filmContainer} style={{position:'relative', top:'50px', marginBottom:'50px'}}>
-                <img src={film.poster} alt="Постер Фильма" style={{borderRadius:'15px'}}/>
-                <section id={styles.filmInfoContainer}>
-                    <h2>{film.name}</h2>
-                    <h3>{film.rating}/10</h3>
-                </section>
-            </section>
+            <div style={{display:'flex', flexDirection:'row', position:'relative', top:'25px'}}>
+                <FilmInfo 
+                    filmInfo={film}
+                    showPoster={true}
+                    showRating={true}
+                />
+            </div>
 
-            <h2 style={{marginTop:'150px'}}>{comments.length} комментариев</h2>
+            <h2 style={{marginTop:'25px'}}>{comments.length} комментариев</h2>
 
             {showAddForm && <AddFilmComment />}
 

@@ -8,6 +8,7 @@ import filmSessionReducer from "@/features/filmSessionSlice";
 import filmSessionInteractReducer from "@/features/filmSessionInteractSlice";
 import cinemaInteractReducer from "@/features/cinemaInteractSlice";
 import filmTicketReducer from "@/features/filmTicketSlice"
+import comingSoonFilmsReducer from "@/features/comingSoonFilmSlice"
 
 export const store = configureStore({
     reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
         users: usersReducer,
         filmSessions: filmSessionReducer,
         filmSessionInteract: filmSessionInteractReducer,
-        filmTicket: filmTicketReducer
+        filmTicket: filmTicketReducer,
+        comingSoonFilms: comingSoonFilmsReducer
     }
 });

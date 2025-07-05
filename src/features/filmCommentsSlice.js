@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { URLSlice } from '@/URLSlice.mjs';
+import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
+import { URLSlice } from '@/utils/URLSlice.mjs';
 import { filmCommentSchema } from '@/zod/filmCommentSchema';
 import { catchValidationErrors } from '@/zod/catchValidationErrors';
 import axios from 'axios'; 
@@ -55,8 +55,15 @@ export const addComment = createAsyncThunk("films/addComment", async (commentDat
 
         await axios.post("http://127.0.0.1:8000/comments/", commentData)
         pathchFilmRating(commentData.movieId)
+
+        return {
+            gotValidationErrors: false
+        }
     } catch (error) {
-        return catchValidationErrors(error)
+        return {
+            gotValidationErrors: true,
+            errors: catchValidationErrors(error)
+        }
     }
 })
 
@@ -83,21 +90,17 @@ const filmCommentsSlice = createSlice({
                 state.status = 'succeeded';
                 state.comments = action.payload;
             })
-            .addCase(fetchComments.rejected, (state, action) => {
-                state.status = 'failed';
-                state.error = action.error.message;
-            })
-
             .addCase(addComment.pending, (state) => {
                 state.validationErrors = [];
             })
             .addCase(addComment.fulfilled, (state, action) => {
-                if (action.payload) {
-                    state.validationErrors = action.payload
+                if (action.payload.gotValidationErrors) {
+                    state.validationErrors = action.payload.errors
                 }
             })
-            .addCase(addComment.rejected, (state, action) => {
-                state.status = 'failed';
+            
+            .addMatcher(isAnyOf(fetchComments.rejected, addComment.rejected), (state, action) => {
+                state.status = "failed";
                 state.error = action.error.message;
             })
     }

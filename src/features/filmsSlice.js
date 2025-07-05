@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk, isAnyOf } from '@reduxjs/toolkit';
-import { fromDBTimeFormat } from '@/dateConverter';
+import { ratingToStarsConverter } from '@/utils/ratingToStarsConverter';
+import { getFilmSessionByFilmId } from '@/utils/getFilmSessionByFilmId';
+import { getSimilarFilms } from '@/utils/getSimilarFilms';
 import axios from 'axios';
 
 export const getSomeFilmsByName = createAsyncThunk("films/getSomeByName", async ({name, amount}) => {
@@ -7,7 +9,6 @@ export const getSomeFilmsByName = createAsyncThunk("films/getSomeByName", async 
         const films = await axios.get("http://127.0.0.1:8000/movies/", {
             params: {name, amount}
         })
-        console.log(films.data)
         return films.data
     } else {
         return []
@@ -30,76 +31,37 @@ export const getSomeFilms = createAsyncThunk("films/getSome", async (amount, {ge
 
     films = await Promise.all(
         films.map(async (film) => {
-            let filmSessions = await axios.get("http://127.0.0.1:8000/filmSessions/", {
-                params: {filmId: film.id}
-            })
-            filmSessions = filmSessions.data
-            filmSessions = filmSessions.map(filmSession => {
-                const newSessionTime = fromDBTimeFormat(filmSession.sessionTime) 
-                return {
-                    ...filmSession,
-                    sessionTime: newSessionTime
-                }
-            })
-
-            const normalized = film.rating / 2
-            const fullCount = Math.floor(normalized);
-            const halfCount = normalized % 1 === 0.5 ? 1 : 0;
-            const emptyCount = 5 - fullCount - halfCount;
-
-            const starRating = [
-                ...Array(fullCount).fill("full"),
-                ...Array(halfCount).fill("half"),
-                ...Array(emptyCount).fill("empty")
-            ]
+            const filmSessions = await getFilmSessionByFilmId(film.id)
+            const similarFilms = await getSimilarFilms(film)
+            const starRating = ratingToStarsConverter(film.rating)
 
             return {
                 ...film,
                 timeTable: filmSessions,
-                starRating
+                starRating,
+                similarFilms
             }
         })
     )
 
-    console.log(films)
     return films
 })
 
 export const getSingleFilm = createAsyncThunk("film/get", async (filmId, {getState}) => {
     const films = getState().films.films
-    if (films.find(film => film.id === filmId)) {
-        console.log("фильм найден в списке недавних")
+    if (films.find(film => film.id === filmId)) { //фильм найден в списке загруженых фильмов
+        console.log("фильм найден в списке загруженых фильмов")
         return false
-    } else {
-        console.log("фильм не найден в списке недавних")
+    } else { //фильм не найден в списке загруженых фильмов
         let film = await axios.get(`http://127.0.0.1:8000/movies/${filmId}/`)
         film = film.data
 
-        let filmSessions = await axios.get("http://127.0.0.1:8000/filmSessions/", {
-            params: {filmId: film.id}
-        })
-        filmSessions = filmSessions.data
-        filmSessions = filmSessions.map(filmSession => {
-            const newSessionTime = fromDBTimeFormat(filmSession.sessionTime)
-
-            return {
-                ...filmSession,
-                sessionTime: newSessionTime
-            }
-        })
-
-        const normalized = film.rating / 2
-        const fullCount = Math.floor(normalized);
-        const halfCount = normalized % 1 === 0.5 ? 1 : 0;
-        const emptyCount = 5 - fullCount - halfCount;
-
-        const starRating = [
-            ...Array(fullCount).fill("full"),
-            ...Array(halfCount).fill("half"),
-            ...Array(emptyCount).fill("empty")
-        ]
+        const filmSessions = await getFilmSessionByFilmId(film.id)
+        const similarFilms = await getSimilarFilms(film)
+        const starRating = ratingToStarsConverter(film.rating)
 
         film.timeTable = filmSessions
+        film.similarFilms = similarFilms
         film.starRating = starRating
 
         return {film, filmId}

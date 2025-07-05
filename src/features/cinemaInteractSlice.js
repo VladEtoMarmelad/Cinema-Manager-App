@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import { getSession } from 'next-auth/react';
 import { signIn } from 'next-auth/react';
 import { cinemaRoomSchema } from '@/zod/cinemaRoomSchema';
@@ -28,11 +28,11 @@ export const addCinema = createAsyncThunk("cinema/add", async (data) => {
 })
 
 export const addCinemaRoom = createAsyncThunk("room/add", async (data) => {
-    let {seats, cinemaId} = data
+    let {seats, cinemaId, roomNumber} = data
 
     try {
 
-        cinemaRoomSchema.parse({seats})
+        cinemaRoomSchema.parse({seats, roomNumber})
 
         let nextSeatNumber = -1
         const numberedSeats = seats.map(seatRow => {
@@ -50,10 +50,18 @@ export const addCinemaRoom = createAsyncThunk("room/add", async (data) => {
             cinemaId: `http://127.0.0.1:8000/cinemas/${cinemaId}/`,
             defaultSeats: {
                 seats: numberedSeats
-            }
+            },
+            number: data.roomNumber
         })
+
+        return {
+            gotValidationErrors: false
+        }
     } catch (error) {
-        return catchValidationErrors(error)
+        return {
+            gotValidationErrors: true,
+            errors: catchValidationErrors(error)
+        }
     }
 })
 
@@ -102,20 +110,16 @@ const cinemaInteractSlice = createSlice({
         .addCase(addCinema.pending, (state) => {
             state.status = "loading"
         })
-        .addCase(addCinema.rejected, (state, action) => {
-            state.status = 'failed';
-            state.error = action.error.message;
-        })
-
         .addCase(addCinemaRoom.pending, (state) => {
             state.validationErrors = []
         })
         .addCase(addCinemaRoom.fulfilled, (state, action) => {
-            if (action.payload) {
-                state.validationErrors = action.payload
+            if (action.payload.gotValidationErrors) {
+                state.validationErrors = action.payload.errors
             }
         })
-        .addCase(addCinemaRoom.rejected, (state, action) => {
+
+        .addMatcher(isAnyOf(addCinema.rejected, addCinemaRoom.rejected), (state, action) => {
             state.status = 'failed';
             state.error = action.error.message;
         })

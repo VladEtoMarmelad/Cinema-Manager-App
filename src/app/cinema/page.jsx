@@ -24,22 +24,31 @@ const CinemaPage = () => {
     const [comingSoonFilmIndex, setComingSoonFilmIndex] = useState(0)
 
     let filmSessionsAmount = useRef(0)
+    let cooldown = useRef(false)
 
     const incrementComingSoonFilmIndex = () => {
-        if (status === "succeeded") {
+        if (status === "succeeded" && !cooldown.current) {
+            setTimeout(() => {
+                cooldown.current = false
+            }, 1000)
             setComingSoonFilmIndex(prevIndex => 
                 prevIndex+1 === cinema.comingSoonFilms.length ? 0 
                 : prevIndex+1
             )
+            cooldown.current = true
         }
     }
 
     const decrementComingSoonFilmIndex = () => {
-        if (status === "succeeded") {
+        if (status === "succeeded" && !cooldown.current) {
+            setTimeout(() => {
+                cooldown.current = false
+            }, 1000)
             setComingSoonFilmIndex(prevIndex => 
                 prevIndex === 0 ? cinema.comingSoonFilms.length-1
                 : prevIndex-1
             )
+            cooldown.current = true
         }
     }
 
@@ -50,15 +59,16 @@ const CinemaPage = () => {
     }, [])
 
     useEffect(() => {
-        if (cinema.closestFilmSessionIndex) {
+        console.log(cinema)
+        if (typeof cinema.closestFilmSessionIndex === "number") {
             setStartIndex(cinema.closestFilmSessionIndex)
-
-            const intervalId = setInterval(() => {
-                incrementComingSoonFilmIndex()
-            }, 7500)
-            intervalId
-            return () => clearInterval(intervalId)
         }
+
+        const intervalId = setInterval(() => {
+            incrementComingSoonFilmIndex()
+        }, 7500)
+        intervalId
+        return () => clearInterval(intervalId)
     }, [cinema])
 
     if (error) return error
@@ -77,46 +87,50 @@ const CinemaPage = () => {
 
             <h1>{cinema.name}</h1>
 
+            <p>{cinema.description}</p>
+
             <hr/>
 
-            <section className={styles.ribbonContainer}>
-                
-                <button 
-                    onClick={() => setStartIndex(startIndex - 1)}
-                    disabled={startIndex === 0}
-                    className={`${styles.rectangleButton} ${styles.left}`}
-                    style={{backgroundColor: startIndex === 0 && "darkgray"}}
-                />
+            {visibleSessions.length > 0 &&
+                <section className={styles.ribbonContainer}>
+                    
+                    <button 
+                        onClick={() => setStartIndex(startIndex - 1)}
+                        disabled={startIndex === 0}
+                        className={`${styles.rectangleButton} ${styles.left}`}
+                        style={{backgroundColor: startIndex === 0 && "darkgray"}}
+                    />
 
-                <div className={styles.carousel}>
-                    {visibleSessions.map(filmSession => {
-                        return (
-                            <div
-                                key={filmSession.id}
-                                className={styles.carouselItem}
-                            >
-                                <img src={filmSession.film.poster} alt="filmPoster" className={styles.bgImage}/>
-                                <Link 
-                                    href={`/cinema/filmSession?id=${filmSession.id}`} 
-                                    key={filmSession.id} 
-                                    className={styles.filmSessionsRibbonElement}
+                    <div className={styles.carousel}>
+                        {visibleSessions.map(filmSession => 
+                                <div
+                                    key={filmSession.id}
+                                    className={styles.carouselItem}
                                 >
-                                    <img src={filmSession.film.poster} style={{borderRadius:'15px'}}/>
-                                    <h2>{filmSession.film.name}</h2>
-                                    <h4>{filmSession.sessionTime}</h4>
-                                </Link>
-                            </div>
-                        );
-                    })}
-                </div>
+                                    <img src={filmSession.film.poster} alt="filmPoster" className={styles.bgImage}/>
+                                    <Link 
+                                        href={`/cinema/filmSession?id=${filmSession.id}`} 
+                                        key={filmSession.id} 
+                                        className={styles.filmSessionsRibbonElement}
+                                    >
+                                        <img src={filmSession.film.poster} style={{borderRadius:'15px', alignSelf:'center'}}/>
+                                        <h4 style={{wordBreak: 'break-word', overflowWrap: 'break-word', margin: 0}}>{filmSession.film.name}</h4>
+                                        <h4>{filmSession.sessionTime}</h4>
+                                    </Link>
+                                </div>
+                            
+                        )}
+                    </div>
 
-                <button 
-                    onClick={() => setStartIndex(startIndex + 1)}
-                    disabled={startIndex + 1 >= cinema.filmSessions.length}
-                    className={`${styles.rectangleButton} ${styles.right}`}
-                    style={{backgroundColor: startIndex + 1 >= cinema.filmSessions.length && "darkgray"}}
-                />
-            </section>
+                    <button 
+                        onClick={() => setStartIndex(startIndex + 1)}
+                        disabled={startIndex + 1 >= cinema.filmSessions.length}
+                        className={`${styles.rectangleButton} ${styles.right}`}
+                        style={{backgroundColor: startIndex + 1 >= cinema.filmSessions.length && "darkgray"}}
+                    />
+                </section>
+            }
+
             <hr/>
             {comingSoonFilm &&
                 <section className={styles.comingSoonFilmsContainer}>
@@ -124,12 +138,18 @@ const CinemaPage = () => {
 
                     <div style={{backgroundImage: `url(${comingSoonFilm.filmData.poster})`}} className={styles.filmBackgroundImageDiv}/>
                     <section style={{display:'flex', flexDirection:'row', justifyContent: 'space-between', alignItems:'center', width:'32.5vw'}}>
+
                         <button 
                             onClick={decrementComingSoonFilmIndex} 
+                            disabled={cinema.comingSoonFilms.length <= 1}
                             className={`${styles.squareButton} ${styles.left}`} 
-                            style={{height:'50px'}}
+                            style={{
+                                height:'50px',
+                                right: '85%',
+                                opacity: cinema.comingSoonFilms.length <= 1 ? 0 : 1
+                            }}
                         />
-                        
+
                         <div style={{transform:'scale(1.25, 1.25)'}}>
                             <img src={comingSoonFilm.filmData.poster}/>
                             <h2>{comingSoonFilm.filmData.name}</h2>
@@ -138,8 +158,13 @@ const CinemaPage = () => {
 
                         <button 
                             onClick={incrementComingSoonFilmIndex} 
+                            disabled={cinema.comingSoonFilms.length <= 1}
                             className={`${styles.squareButton} ${styles.right}`} 
-                            style={{height:'50px'}}
+                            style={{
+                                height:'50px',
+                                right: '5%',
+                                opacity: cinema.comingSoonFilms.length <= 1 ? 0 : 1
+                            }}
                         />
                             
                     </section>

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fromDBTimeFormat } from '@/dateConverter';
-import { URLSlice } from '@/URLSlice.mjs';
+import { fromDBTimeFormat } from '@/utils/dateConverter';
+import { URLSlice } from '@/utils/URLSlice.mjs';
 import { isBefore } from 'date-fns';
 import axios from 'axios';
 

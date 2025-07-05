@@ -3,18 +3,27 @@
 import { useSession } from "next-auth/react";
 import { useSelector, useDispatch } from "react-redux";
 import { changeCinemaInfo, addCinema } from "@/features/cinemaInteractSlice";
+import { useRouter } from "next/navigation";
 import styles from "@/app/css/CinemaAdminPage.module.css"
 
 const RegisterCinema = () => {
-    
     const session = useSession();
-    
-    const cinemaInfo = useSelector((state) => state.cinemaInteract.cinemaInfo)
+    const router = useRouter();
 
+    const cinemaInfo = useSelector((state) => state.cinemaInteract.cinemaInfo)
     const dispatch = useDispatch();
 
     const changeCinemaInfoHandler = (field, value) => {
         dispatch(changeCinemaInfo({field, value}))
+        
+    }
+
+    const addCinemaHandler = (e) => {
+        e.preventDefault()
+        dispatch(addCinema({
+            name: cinemaInfo.name, 
+            description: cinemaInfo.description
+        }))
     }
 
     if (session.status === "loading") return <h2>Загрузка...</h2>
@@ -26,7 +35,7 @@ const RegisterCinema = () => {
             <div className={styles.addSectionName}>
                 <h2>Форма регистрации кинотеатра</h2>
             </div>
-            <form onSubmit={(e) => {e.preventDefault(); dispatch(addCinema({name: cinemaInfo.name, description: cinemaInfo.description}))}} className={styles.addSectionForm}>
+            <form onSubmit={addCinemaHandler} className={styles.addSectionForm}>
                 <input 
                     value={cinemaInfo.name}
                     onChange={(e) => {changeCinemaInfoHandler("name", e.target.value)}}

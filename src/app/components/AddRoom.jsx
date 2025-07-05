@@ -3,6 +3,8 @@
 import { useSelector, useDispatch } from "react-redux";
 import { addRow, changeRowInfo, changeSeat, addCinemaRoom } from "@/features/cinemaInteractSlice";
 import { useSearchParams } from "next/navigation";
+import { ValidationErrors } from "./ValidationErrors";
+import { useRef } from "react";
 import styles from "@/app/css/CinemaAdminPage.module.css"
 
 const AddSeatButton = ({index, newValue}) => {
@@ -45,12 +47,19 @@ const AddRoom = () => {
     const searchParams = useSearchParams();
     const cinemaId = Number(searchParams.get("id"));
 
+    const roomNumber = useRef("")
+
     const addCinemaRoomHandler = (e) => {
         e.preventDefault();
         dispatch(addCinemaRoom({
             seats: rows.defaultSeats,
-            cinemaId: cinemaId
-        }))
+            cinemaId: cinemaId,
+            roomNumber: Number(roomNumber.current.value)
+        })).unwrap().then(addedRoom => {
+            if (!addedRoom.gotValidationErrors) {
+                window.location.reload()
+            }
+        })
     }
 
     return (
@@ -58,7 +67,7 @@ const AddRoom = () => {
             <div className={styles.addSectionName}>
                 <h2>Добавление комнаты</h2>
             </div>
-            <form onSubmit={addCinemaRoomHandler} className={styles.addSectionForm}>
+            <form onSubmit={addCinemaRoomHandler} className={styles.addSectionForm} noValidate>
                 {
                     rows.defaultSeats.map((row, index) => 
                         <div key={index}>
@@ -105,6 +114,14 @@ const AddRoom = () => {
                 >
                 Добавить ряд +
                 </button>
+
+                <input 
+                    ref={roomNumber}
+                    type="number"
+                    placeholder="Номер кинозала..."
+                    style={{width:'fit-content', marginRight:'15px'}}
+                />
+
                 <button 
                     type="submit" 
                     className="blackButton"
@@ -112,14 +129,7 @@ const AddRoom = () => {
                     Добавить комнату
                 </button>
 
-                {validationErrors.length > 0 && 
-                    <section className="errorSection" style={{marginTop:'25px'}}>
-                        {validationErrors.map((validationError, index) => 
-                            <li key={index}>{validationError}</li>
-                        )}
-                    </section>
-                }
-
+                <ValidationErrors errors={validationErrors}/>
             </form>
         </section>
     )

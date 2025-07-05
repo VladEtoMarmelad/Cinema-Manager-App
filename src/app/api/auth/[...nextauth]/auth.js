@@ -2,7 +2,7 @@ import axios from "axios";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import Google from "next-auth/providers/google"
-import { URLSlice } from "@/URLSlice.mjs"
+import { URLSlice } from "@/utils/URLSlice.mjs"
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
     providers: [

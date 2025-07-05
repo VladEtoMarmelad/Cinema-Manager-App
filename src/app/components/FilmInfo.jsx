@@ -10,7 +10,7 @@ const FeatureComponent = (props) => {
 }
 
 const FilmInfo = (props) => {
-    const {filmInfo, showCommentsLink, showSimilar, showPoster, showRating} = props
+    const {filmInfo, showCommentsLink, showSimilar, showPoster, showRating, showDescription} = props
 
     const [filmInfoPoster, setfilmInfoPoster] = useState(null)
 
@@ -24,15 +24,27 @@ const FilmInfo = (props) => {
 
     return (
         <>
-            {showPoster &&
-                <img 
-                    src={filmInfoPoster && filmInfoPoster || filmInfo.poster} 
-                    alt="filmPoster" 
-                    id={styles.poster}
-                />
-            }
+            <div style={{display:'flex', flexDirection:'column', textAlign:'center'}}>
+                {showPoster &&
+                    <img 
+                        src={filmInfoPoster && filmInfoPoster || filmInfo.poster} 
+                        alt="filmPoster" 
+                        id={styles.poster}
+                    />
+                }
 
-            <section id={styles.infoSection}>
+                {showCommentsLink && 
+                    <Link 
+                        href={`/film/comments?id=${filmInfo.id}`} 
+                        className="grayButton"
+                        style={{marginTop:'15px', borderRadius:'7.5px'}}
+                    >
+                        Коментарии <i className="bi bi-chat-dots-fill"/>
+                    </Link>
+                }
+            </div>
+
+            <section id={styles.infoSection} style={{marginLeft:'10px'}}>
                 <h1>{filmInfo.name}</h1>
                 
                 {showRating &&
@@ -52,14 +64,27 @@ const FilmInfo = (props) => {
                     <FeatureComponent title="Сценарист" value={filmInfo.scenarist}/>
                     <FeatureComponent title="Производство" value={filmInfo.production}/>
                 </div>
-                <p>{filmInfo.description}</p>
-
-                {showCommentsLink && 
-                    <Link href={`/film/comments?id=${filmInfo.id}`} className="grayButton">Коментарии <i className="bi bi-chat-dots-fill"/></Link>
+                
+                {showDescription &&
+                    <p>{filmInfo.description}</p>
                 }
 
                 {showSimilar && 
-                    <h3 style={{marginTop:'30px'}}>Смотрите также:</h3>
+                    <>
+                        <h3 style={{marginTop:'30px', marginBottom:'30px'}}>Смотрите также:</h3>
+                        <section className={styles.similarFilmsSection}>
+                            {filmInfo.similarFilms.map((film) => {
+                                if (film) {
+                                    return (
+                                        <Link key={film.id} href={`/film?id=${film.id}`} className={styles.similarFilm}>
+                                            <img src={film.poster} alt="poster"/>
+                                            <h3>{film.name}</h3>
+                                        </Link>
+                                    )
+                                }
+                            })}
+                        </section>
+                    </>
                 }
 
             </section>

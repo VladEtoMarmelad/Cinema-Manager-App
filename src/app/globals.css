@@ -40,6 +40,10 @@ input, textarea, select {
   transition: all 0.05s;
 }
 
+textarea {
+  field-sizing: content;
+}
+
 input:focus, textarea:focus {
   outline: none;
   border-bottom: 3px solid rgba(30, 30, 30, 0.55);

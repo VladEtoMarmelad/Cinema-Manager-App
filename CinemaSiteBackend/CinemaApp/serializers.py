@@ -35,12 +35,14 @@ class CinemaRoomSerializer(serializers.HyperlinkedModelSerializer):
 
 class FilmSessionSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
+    roomNumber = serializers.ReadOnlyField(source='roomId.number', read_only=True)
     class Meta:
         model = FilmSessionModel
         fields = "__all__"
 
 class FilmTicketSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField()
+    roomNumber = serializers.ReadOnlyField(source='filmSessionId.roomId.number', read_only=True)
     class Meta:
         model = FilmTicketModel
         fields = "__all__"

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { fromDBTimeFormat } from '@/dateConverter';
+import { fromDBTimeFormat } from '@/utils/dateConverter';
 import axios from 'axios';
 
 export const fetchSingleFilmSession = createAsyncThunk("filmSession/get", async (filmSessionId) => {
