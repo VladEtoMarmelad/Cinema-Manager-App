@@ -17,8 +17,6 @@ export const addFilm = createAsyncThunk("films/addFilm", async (filmData) => {
             }
         });
 
-        console.log("addedFilm:", addedFilm)
-
         return {
             gotValidationErrors: false,
             id: addedFilm.data.id

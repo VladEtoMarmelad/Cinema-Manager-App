@@ -72,7 +72,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             if (account && account.provider === "google") {
                 let DBuser = await axios.get("http://127.0.0.1:8000/users/", {params: {email: profile.email}})
                 DBuser = DBuser.data[0]
-
                 token.id = DBuser.id
                 token.name = DBuser.name
                 token.email = profile.email

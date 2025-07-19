@@ -41,7 +41,6 @@ export const getUserTickets = createAsyncThunk("tickets/get", async (userId) => 
         }
     }
 
-    console.log(sortedTickets)
     return sortedTickets
 })
 

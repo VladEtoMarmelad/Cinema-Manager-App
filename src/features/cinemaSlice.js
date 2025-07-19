@@ -81,13 +81,7 @@ export const fetchCinema = createAsyncThunk("cinema/get", async (cinemaId) => {
         })
     );
     cinema.comingSoonFilms = comingSoonFilmsWithFilms
-
-    console.log(now)
-    console.log(allSessionTimes)
-
     const closestFilmSessionIndex = closestIndexTo(now, allSessionTimes)
-
-    console.log(cinema)
 
     return {cinema, closestFilmSessionIndex}
 })
@@ -106,7 +100,6 @@ export const getSomeCinemasByName = createAsyncThunk("cinemas/getSomeByName", as
         const cinemas = await axios.get("http://127.0.0.1:8000/cinemas/", {
             params: {name, amount}
         })
-        console.log(cinemas.data)
         return cinemas.data
     } else {
         return []

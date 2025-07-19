@@ -59,7 +59,6 @@ const CinemaPage = () => {
     }, [])
 
     useEffect(() => {
-        console.log(cinema)
         if (typeof cinema.closestFilmSessionIndex === "number") {
             setStartIndex(cinema.closestFilmSessionIndex)
         }

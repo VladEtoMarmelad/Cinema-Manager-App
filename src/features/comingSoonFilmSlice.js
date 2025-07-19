@@ -5,7 +5,6 @@ import axios from 'axios';
 
 export const addComingSoonFilm = createAsyncThunk("comingSoonFilm/add", async (comingSoonFilmData) => {
     try {
-        console.log(comingSoonFilmData)
         const {cinemaId, filmId, closestSessionTime} = comingSoonFilmData
 
         await comingSoonFilmsSchema.parseAsync({

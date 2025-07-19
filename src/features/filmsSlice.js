@@ -50,7 +50,6 @@ export const getSomeFilms = createAsyncThunk("films/getSome", async (amount, {ge
 export const getSingleFilm = createAsyncThunk("film/get", async (filmId, {getState}) => {
     const films = getState().films.films
     if (films.find(film => film.id === filmId)) { //фильм найден в списке загруженых фильмов
-        console.log("фильм найден в списке загруженых фильмов")
         return false
     } else { //фильм не найден в списке загруженых фильмов
         let film = await axios.get(`http://127.0.0.1:8000/movies/${filmId}/`)

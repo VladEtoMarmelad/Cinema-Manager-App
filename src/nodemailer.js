@@ -10,7 +10,6 @@ const TicketEmail = ({ mainInfo, seat, row, time }) =>
         <h2>Время сеанса: ${time}</h2>
         <hr/>
         <p>(P.S. Отсчёт номеров места и ряда начинаются с 0. 0-самый первый, а 1-второй)</p>
-        <h1>:3 Сердечко---><3</h1>
     `
 
 const transporter = nodemailer.createTransport({
